@@ -1,1 +1,289 @@
-<!doctype html><html lang='fr'><head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='theme-color' content='#22c55e'/><link rel='stylesheet' href='assets/style.css'/><title>Animals — PetBook</title></head><body><header><div class='container nav'><a class='brand' href='index.html'><img src='/images/logo.svg' alt='Logo' style='height:26px;width:auto'/>PetBook</a><nav class='links'><a href='animals.html'>Vente</a><a href='services.html'>Prestations</a><a href='pet-alert.html'>Pet Alert</a><a href='publish.html' class='btn primary'>Publier</a><a href='auth.html'>Connexion</a></nav></div></header><main class='section'><div class='container'><div class='card'><div class='body'><h1>Animals</h1><p class='muted'>Contenu à venir.</p></div></div></div></main><footer><div class='container footgrid'><div><div class='title' style='font-weight:800'>PetBook</div><p class='muted'>Plateforme suisse pour animaux</p></div><div><div class='title' style='font-weight:800'>Contact</div><p class='muted'><a href='mailto:petbookswiss@gmail.com'>petbookswiss@gmail.com</a></p></div></div><div class='container copy'>© PetBook.</div><script src='assets/chat-milo.js'></script></footer></body></html>
+<!doctype html>
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Animaux de ferme</title>  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb;--bg:#fff}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;color:var(--ink);background:var(--bg)}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1200px;margin:0 auto;padding:0 18px}
+
+    header{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:26px}
+    .brand img{height:80px;width:auto}
+    @media(min-width:768px){.brand img{height:110px}}
+    .links{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer;background:#fff}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.small{padding:8px 12px;font-size:14px}
+    .btn.ghost{background:#fff;border-color:var(--border);color:var(--ink)}
+
+    .section{padding:20px 0}
+
+    /* ===== BOUTONS DE SECTION (remplacent les tuiles avec photos) ===== */
+    .tiles.buttons{display:grid;grid-template-columns:1fr;gap:12px;margin-top:6px}
+    @media(min-width:768px){.tiles.buttons{grid-template-columns:repeat(2,1fr)}}
+    .btn.big{display:flex;align-items:center;justify-content:center;padding:14px 18px;font-weight:800;border-radius:12px;border:2px solid var(--border)}
+    .btn.big:hover{border-color:#cbd5e1;transform:translateY(-1px)}
+
+    /* ===== CARTES ===== */
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+    .card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+    .card img{width:100%;aspect-ratio:16/10;object-fit:cover}
+    .card .pad{padding:12px}
+    .meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;margin-top:6px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#ecfdf5;color:#065f46;border:1px solid #10b98133;font-size:12px}
+    .secure{display:inline-flex;align-items:center;gap:6px;color:#0ea5e9;font-size:12px;margin-top:6px}
+
+    /* ===== BARRE OUTILS ===== */
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 18px}
+    .toolbar input[type="search"], .toolbar select{padding:10px 12px;border:1px solid var(--border);border-radius:10px}
+
+    /* ===== MODAL AUTH ===== */
+    .auth-guard{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1100}
+    .auth-box{background:#fff;border-radius:16px;max-width:420px;width:92vw;padding:18px;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .auth-box h4{margin:0 0 8px}
+    .auth-box p{color:#475569;margin:0 0 12px}
+
+    /* badge premium */
+    .badge-prem{background:#fff7ed;color:#b45309;border-color:#f59e0b}
+    .card.premium{border-color:#fbbf24}
+  </style></head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="images/logo.png" alt="Logo PetBook" />
+        PetBook
+      </a>
+      <nav class="links">
+        <a href="animals.html">Vente</a>
+        <a href="services.html">Prestations</a>
+        <a href="pet-alert.html">Pet Alert</a>
+        <a href="accessoires.html">Accessoires</a>
+        <a href="map.html" class="btn">🗺️ Carte</a>
+        <a href="publish.html" class="btn primary" data-requires-auth>Publier</a>
+        <a href="auth.html" id="link-auth">Connexion</a>
+      </nav>
+    </div>
+  </header>  <main class="section">
+    <div class="container">
+      <h1 style="font-size:1.6rem;margin-bottom:6px">🐐 Animaux de ferme</h1>
+      <p style="color:#475569">Annonces visibles par tous. Pour <b>contacter</b> ou <b>publier</b> : inscription vérifiée (anti‑arnaque).
+      </p><!-- BOUTONS DE SECTIONS (sans images) -->
+  <div class="tiles buttons" style="margin-top:14px">
+    <a class="btn big" href="adoption-animaux-ferme.html">🐐 Animaux de ferme</a>
+    <a class="btn big" href="animals.html">🐾 Vente d’animaux</a>
+    <a class="btn big" href="services.html">🛠️ Prestations (vétos, toilettage…)</a>
+    <a class="btn big" href="pet-alert.html">🚨 Pet Alert (perdu / trouvé)</a>
+  </div>
+
+  <!-- PREMIUM TOP (remplace le carrousel) -->
+  <section class="section" aria-labelledby="premium-top">
+    <h2 id="premium-top" style="font-size:1.25rem;margin:0 0 10px">⭐ Annonces Premium</h2>
+    <p style="color:#475569;margin-bottom:12px">Option payante pour mise en avant (toujours 3 spots maximum).</p>
+    <div class="grid">
+      <article class="card premium">
+        <img src="images/demo/cheval.jpg" alt="Cheval Haflinger">
+        <div class="pad">
+          <div class="pill badge-prem">⭐ PREMIUM</div>
+          <h3 style="margin-top:8px">Cheval Haflinger — très docile</h3>
+          <div class="meta"><span>Vaud</span><span class="pill">CHF 3’900</span></div>
+          <div class="actions" style="display:flex;gap:8px;margin-top:10px">
+            <a href="#" class="btn small" data-requires-auth data-action="contact" data-phone="+41 76 555 66 77">Voir numéro</a>
+            <a href="#" class="btn small ghost" data-requires-auth data-action="message">Écrire au vendeur</a>
+          </div>
+          <div class="secure">🔒 Contact réservé aux membres vérifiés</div>
+        </div>
+      </article>
+      <article class="card premium">
+        <img src="images/demo/chevre.jpg" alt="Chèvres miniatures">
+        <div class="pad">
+          <div class="pill badge-prem">⭐ PREMIUM</div>
+          <h3 style="margin-top:8px">Couple de chèvres miniatures</h3>
+          <div class="meta"><span>Valais</span><span class="pill">CHF 320 le couple</span></div>
+          <div class="actions" style="display:flex;gap:8px;margin-top:10px">
+            <a href="#" class="btn small" data-requires-auth data-action="contact" data-phone="+41 78 111 22 33">Voir numéro</a>
+            <a href="#" class="btn small ghost" data-requires-auth data-action="message">Écrire au vendeur</a>
+          </div>
+          <div class="secure">🔒 Contact réservé aux membres vérifiés</div>
+        </div>
+      </article>
+      <article class="card premium">
+        <img src="images/demo/poules.jpg" alt="Poules Pekin sélection">
+        <div class="pad">
+          <div class="pill badge-prem">⭐ PREMIUM</div>
+          <h3 style="margin-top:8px">Poules naines Pékin — sélection</h3>
+          <div class="meta"><span>Fribourg</span><span class="pill">CHF 25 / pièce</span></div>
+          <div class="actions" style="display:flex;gap:8px;margin-top:10px">
+            <a href="#" class="btn small" data-requires-auth data-action="contact" data-phone="+41 79 000 00 00">Voir numéro</a>
+            <a href="#" class="btn small ghost" data-requires-auth data-action="message">Écrire au vendeur</a>
+          </div>
+          <div class="secure">🔒 Contact réservé aux membres vérifiés</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- BARRE OUTILS LISTE -->
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Rechercher (ex: poules, chèvre, cheval)" />
+    <select id="cant">
+      <option value="">Canton</option>
+      <option>VD</option><option>VS</option><option>FR</option><option>GE</option><option>BE</option>
+    </select>
+    <select id="tri">
+      <option value="recent">Tri : plus récent</option>
+      <option value="price_asc">Prix : croissant</option>
+      <option value="price_desc">Prix : décroissant</option>
+    </select>
+  </div>
+
+  <!-- LISTE PRINCIPALE -->
+  <section class="section" aria-labelledby="farm-list">
+    <h2 id="farm-list" style="font-size:1.25rem;margin:0 0 10px">Toutes les annonces</h2>
+    <div class="grid" id="list">
+      <!-- éléments injectés en JS pour permettre filtrage tri (démo statique ci-dessous comme fallback) -->
+    </div>
+    <noscript>
+      <div class="grid">
+        <article class="card">
+          <img src="images/demo/poules.jpg" alt="Poules naines Pekin">
+          <div class="pad">
+            <h3>Poules naines Pékin</h3>
+            <div class="meta"><span>FR</span><span class="pill">CHF 20 / pièce</span></div>
+            <div class="actions">
+              <a href="#" class="btn small" data-requires-auth data-action="contact" data-phone="+41 79 000 00 00">Voir numéro</a>
+              <a href="#" class="btn small ghost" data-requires-auth data-action="message">Écrire au vendeur</a>
+            </div>
+            <div class="secure">🔒 Contact réservé aux membres vérifiés</div>
+          </div>
+        </article>
+        <article class="card">
+          <img src="images/demo/chevre.jpg" alt="Chevre miniature">
+          <div class="pad">
+            <h3>Chèvre miniature</h3>
+            <div class="meta"><span>VS</span><span class="pill">CHF 180</span></div>
+            <div class="actions">
+              <a href="#" class="btn small" data-requires-auth data-action="contact" data-phone="+41 78 111 22 33">Voir numéro</a>
+              <a href="#" class="btn small ghost" data-requires-auth data-action="message">Écrire au vendeur</a>
+            </div>
+            <div class="secure">🔒 Contact réservé aux membres vérifiés</div>
+          </div>
+        </article>
+        <article class="card">
+          <img src="images/demo/cheval.jpg" alt="Cheval Haflinger">
+          <div class="pad">
+            <h3>Cheval Haflinger</h3>
+            <div class="meta"><span>VD</span><span class="pill">CHF 3’500</span></div>
+            <div class="actions">
+              <a href="#" class="btn small" data-requires-auth data-action="contact" data-phone="+41 76 555 66 77">Voir numéro</a>
+              <a href="#" class="btn small ghost" data-requires-auth data-action="message">Écrire au vendeur</a>
+            </div>
+            <div class="secure">🔒 Contact réservé aux membres vérifiés</div>
+          </div>
+        </article>
+      </div>
+    </noscript>
+  </section>
+</div>
+
+  </main>  <!-- MODAL AUTH GUARD -->  <div class="auth-guard" id="auth-guard" aria-hidden="true">
+    <div class="auth-box">
+      <h4>Compte requis 🔒</h4>
+      <p>Pour publier une annonce, contacter un vendeur ou voir les coordonnées, merci de <strong>créer un compte</strong> et de <strong>vérifier votre identité</strong> (anti‑arnaque).</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn ghost" id="guard-cancel">Annuler</button>
+        <a class="btn primary" href="auth.html" id="guard-go">Se connecter / S’inscrire</a>
+      </div>
+    </div>
+  </div>  <!-- Chat Milo -->  <script src="assets/chat-milo.js"></script>  <script>
+    // Démo de data (à remplacer par ton JSON/API)
+    const DATA = [
+      { id:1, title:'Poules naines Pékin', canton:'FR', price:20, price_label:'CHF 20 / pièce', img:'images/demo/poules.jpg', phone:'+41 79 000 00 00' },
+      { id:2, title:'Chèvre miniature', canton:'VS', price:180, price_label:'CHF 180', img:'images/demo/chevre.jpg', phone:'+41 78 111 22 33' },
+      { id:3, title:'Cheval Haflinger', canton:'VD', price:3500, price_label:'CHF 3’500', img:'images/demo/cheval.jpg', phone:'+41 76 555 66 77' },
+      { id:4, title:'Cochons nains', canton:'GE', price:160, price_label:'CHF 160', img:'images/demo/poules.jpg', phone:'+41 79 888 77 66' }
+    ];
+
+    const list = document.getElementById('list');
+    const q = document.getElementById('q');
+    const cant = document.getElementById('cant');
+    const tri = document.getElementById('tri');
+
+    function render(items){
+      list.innerHTML = items.map(x=>`
+        <article class="card">
+          <img src="${x.img}" alt="${x.title}">
+          <div class="pad">
+            <h3>${x.title}</h3>
+            <div class="meta"><span>${x.canton}</span><span class="pill">${x.price_label}</span></div>
+            <div class="actions" style="display:flex;gap:8px;margin-top:10px">
+              <a href="#" class="btn small" data-requires-auth data-action="contact" data-phone="${x.phone}">Voir numéro</a>
+              <a href="#" class="btn small ghost" data-requires-auth data-action="message">Écrire au vendeur</a>
+            </div>
+            <div class="secure">🔒 Contact réservé aux membres vérifiés</div>
+          </div>
+        </article>`).join('');
+      wireAuth();
+    }
+
+    function apply(){
+      let items = [...DATA];
+      const text = q.value.trim().toLowerCase();
+      if(text) items = items.filter(x=>x.title.toLowerCase().includes(text));
+      if(cant.value) items = items.filter(x=>x.canton === cant.value);
+      if(tri.value==='price_asc') items.sort((a,b)=>a.price-b.price);
+      if(tri.value==='price_desc') items.sort((a,b)=>b.price-a.price);
+      render(items);
+    }
+
+    q.addEventListener('input', ()=>{ clearTimeout(window.__t); window.__t=setTimeout(apply, 180); });
+    cant.addEventListener('change', apply);
+    tri.addEventListener('change', apply);
+    render(DATA);
+
+    // ===== GARDE D'AUTH (simulateur) =====
+    function wireAuth(){
+      const isLogged = ()=> !!localStorage.getItem('pb_user');
+      const guard = document.getElementById('auth-guard');
+      const hideGuard = ()=> guard.style.display='none';
+      const showGuard = ()=> guard.style.display='flex';
+      const cancelBtn = document.getElementById('guard-cancel');
+      cancelBtn && cancelBtn.addEventListener('click', hideGuard);
+
+      document.querySelectorAll('[data-requires-auth]').forEach(el=>{
+        el.addEventListener('click', (e)=>{
+          if(!isLogged()){
+            e.preventDefault();
+            showGuard();
+          } else if(el.dataset.action==='contact'){
+            e.preventDefault();
+            const num = el.dataset.phone || '—';
+            el.outerHTML = `<span class="pill">📞 ${num}</span>`;
+          }
+        });
+      });
+
+      const authLink = document.getElementById('link-auth');
+      if(authLink){ authLink.addEventListener('click', (e)=>{
+        if(!isLogged()){
+          e.preventDefault();
+          localStorage.setItem('pb_user', JSON.stringify({id:'demo', name:'Membre'}));
+          alert('✅ Connecté (démo).');
+          location.reload();
+        }
+      }); }
+    }
+    wireAuth();
+  </script></body>
+</html>
