@@ -10,6 +10,9 @@
   <link rel="icon" type="image/png" href="images/favicon.png" />
   <link rel="apple-touch-icon" href="images/logo-app.png" />
 
+  <!-- Netlify Identity (authentification) -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
   <style>
     :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb}
     *{box-sizing:border-box;margin:0;padding:0}
@@ -24,37 +27,19 @@
     .brand img{height:80px;width:auto}
     @media(min-width:768px){.brand img{height:110px}}
     .links{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
     .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
 
     .section{padding:24px 0}
 
     /* ===== CARROUSEL (bulle allongée) ===== */
     .bubble-wrap{display:flex;justify-content:center;margin-top:10px}
-    .carousel{
-      width:clamp(320px, 94vw, 1200px);
-      aspect-ratio: 32/9;
-      border-radius:30px; overflow:hidden;
-      box-shadow:0 16px 48px rgba(0,0,0,.12);
-      position:relative; background:#000;
-    }
+    .carousel{width:clamp(320px, 94vw, 1200px);aspect-ratio: 32/9;border-radius:30px; overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.12);position:relative; background:#000;}
     .carousel-track{display:flex;height:100%;transition:transform .6s ease}
     .slide{min-width:100%;height:100%;position:relative;display:block}
     .slide img{width:100%;height:100%;object-fit:cover;display:block}
-    .slide .label{
-      position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 16px;border-radius:999px;
-      background:rgba(0,0,0,.45);color:#fff;font-weight:800;
-      backdrop-filter:saturate(140%) blur(4px);
-      pointer-events:none;white-space:nowrap;
-    }
-    .carousel-btn{
-      position:absolute;top:50%;transform:translateY(-50%);
-      width:40px;height:40px;border:none;border-radius:999px;
-      background:rgba(0,0,0,.28);color:#fff;font-size:20px;cursor:pointer;
-      display:flex;align-items:center;justify-content:center
-    }
+    .slide .label{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font-weight:800;backdrop-filter:saturate(140%) blur(4px);pointer-events:none;white-space:nowrap;}
+    .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border:none;border-radius:999px;background:rgba(0,0,0,.28);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .carousel-btn:hover{background:rgba(0,0,0,.4)}
     .prev{left:10px}.next{right:10px}
     .carousel-dots{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:8px}
@@ -77,6 +62,21 @@
     .footgrid{display:grid;grid-template-columns:1fr;gap:16px;padding:20px 0;text-align:center}
     @media(min-width:768px){.footgrid{grid-template-columns:repeat(2,1fr);text-align:left}}
     .copy{text-align:center;font-size:.85rem;color:#64748b;padding:10px 0}
+
+    /* ===== POPUP BIENVENUE ===== */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
+    .modal{width:min(720px, 100%);background:#fff;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.25);overflow:hidden;animation:pop .18s ease-out;}
+    @keyframes pop{from{transform:scale(.98);opacity:.6}to{transform:scale(1);opacity:1}}
+    .modal header{border-bottom:1px solid var(--border);padding:16px 20px}
+    .modal header h3{margin:0;font-size:1.25rem}
+    .modal .content{padding:18px 20px;line-height:1.6}
+    .modal .content p{margin-bottom:12px}
+    .modal .actions{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding:12px 16px;background:#f8fafc;flex-wrap:wrap;}
+    .modal .left{display:flex;align-items:center;gap:10px}
+    .modal input[type="checkbox"]{width:18px;height:18px}
+    .modal .right{display:flex;gap:10px}
+    .btn.ghost{background:#fff;border-color:var(--border);color:var(--ink)}
+    .hidden{display:none !important}
   </style>
 </head>
 <body>
@@ -94,7 +94,11 @@
         <a href="pet-alert.html">Pet Alert</a>
         <a href="accessoires.html">Accessoires</a>
         <a href="publish.html" class="btn primary">Publier</a>
-        <a href="auth.html">Connexion</a>
+
+        <!-- Auth UI -->
+        <a id="link-account" href="compte.html" class="btn hidden">Mon compte</a>
+        <button id="btn-login" class="btn">Connexion</button>
+        <button id="btn-logout" class="btn hidden">Se déconnecter</button>
       </nav>
     </div>
   </header>
@@ -147,50 +151,51 @@
   <main class="section">
     <div class="container">
       <div class="tiles">
-
         <a class="logo-tile" href="animals.html">
-          <div class="logo-img">
-            <img src="images/vente.png" alt="Vente d’animaux" />
-          </div>
-          <div class="caption">
-            <h2>Vente d’animaux</h2>
-            <p>Parcourir les animaux disponibles</p>
-          </div>
+          <div class="logo-img"><img src="images/vente.png" alt="Vente d’animaux" /></div>
+          <div class="caption"><h2>Vente d’animaux</h2><p>Parcourir les animaux disponibles</p></div>
         </a>
-
         <a class="logo-tile" href="services.html">
-          <div class="logo-img">
-            <img src="images/prestations.png" alt="Prestations pour animaux" />
-          </div>
-          <div class="caption">
-            <h2>Prestations</h2>
-            <p>Garde, promenade, toilettage…</p>
-          </div>
+          <div class="logo-img"><img src="images/prestations.png" alt="Prestations pour animaux" /></div>
+          <div class="caption"><h2>Prestations</h2><p>Garde, promenade, toilettage…</p></div>
         </a>
-
         <a class="logo-tile" href="pet-alert.html">
-          <div class="logo-img">
-            <img src="images/pet-alert.png" alt="PET ALERT" />
-          </div>
-          <div class="caption">
-            <h2>PET ALERT</h2>
-            <p>Signalez un animal perdu ou retrouvé</p>
-          </div>
+          <div class="logo-img"><img src="images/pet-alert.png" alt="PET ALERT" /></div>
+          <div class="caption"><h2>PET ALERT</h2><p>Signalez un animal perdu ou retrouvé</p></div>
         </a>
-
         <a class="logo-tile" href="accessoires.html">
-          <div class="logo-img">
-            <img src="images/Accesoir.png" alt="Accessoires & matériel" />
-          </div>
-          <div class="caption">
-            <h2>Accessoires</h2>
-            <p>Cages, litières, paniers, laisses…</p>
-          </div>
+          <div class="logo-img"><img src="images/Accesoir.png" alt="Accessoires & matériel" /></div>
+          <div class="caption"><h2>Accessoires</h2><p>Cages, litières, paniers, laisses…</p></div>
         </a>
-
       </div>
     </div>
   </main>
+
+  <!-- POPUP BIENVENUE -->
+  <div class="modal-backdrop" id="pb-welcome">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pb-title">
+      <header><h3 id="pb-title">Bienvenue sur PetBook 🐾</h3></header>
+      <div class="content">
+        <p><strong>Un site de passionnés pour les passionnés.</strong></p>
+        <p>Notre mission&nbsp;: offrir un espace <strong>sûr, responsable et bienveillant</strong> pour adopter, vendre et s’entraider autour des animaux.</p>
+        <p>💚 Nous sommes <strong>contre la maltraitance</strong> et les <strong>pratiques malhonnêtes</strong>. Pour protéger tout le monde, <strong>les vendeurs doivent s’identifier</strong> (anti-arnaque), afin que la vente et l’adoption se déroulent dans la confiance, en protégeant au mieux <strong>les animaux</strong> et <strong>les humains</strong>.</p>
+        <p>Sur PetBook, retrouvez&nbsp;:</p>
+        <ul style="margin-left:18px;margin-top:8px">
+          <li>🐕 des <strong>animaux</strong> à adopter / vendre</li>
+          <li>🛒 des <strong>accessoires</strong> et équipements</li>
+          <li>🚨 des <strong>alertes</strong> pour animaux perdus / retrouvés</li>
+        </ul>
+        <p>Bienvenue dans la communauté PetBook — créé <em>par des passionnés, pour des passionnés</em> 🐶🐱</p>
+      </div>
+      <div class="actions">
+        <label class="left"><input type="checkbox" id="pb-never" /><span>✅ Lue, ne plus afficher</span></label>
+        <div class="right">
+          <button class="btn ghost" id="pb-close">Fermer</button>
+          <button class="btn primary" id="pb-accept">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer>
@@ -209,8 +214,9 @@
     <!-- Chat Milo -->
     <script src="assets/chat-milo.js"></script>
 
-    <!-- JS carrousel -->
+    <!-- JS carrousel + popup + auth -->
     <script>
+      // ===== CARROUSEL =====
       (function(){
         const track = document.getElementById('track');
         const slides = [...track.children];
@@ -219,7 +225,6 @@
         const dotsWrap = document.getElementById('dots');
         let idx = 0, timer = null, lock = false;
 
-        // Dots dynamiques
         slides.forEach((_,i)=>{
           const b=document.createElement('button');
           b.className='dot'+(i===0?' active':'');
@@ -257,6 +262,72 @@
         });
 
         start();
+      })();
+
+      // ===== POPUP BIENVENUE =====
+      (function(){
+        const MODAL_KEY = 'pb_welcome_dismissed';
+        const backdrop = document.getElementById('pb-welcome');
+        const chk = document.getElementById('pb-never');
+        const closeBtn = document.getElementById('pb-close');
+        const okBtn = document.getElementById('pb-accept');
+
+        function openModal(){ backdrop.style.display='flex'; document.body.style.overflow='hidden'; }
+        function hideModal(){ backdrop.style.display='none'; document.body.style.overflow=''; }
+
+        if(localStorage.getItem(MODAL_KEY) !== '1'){
+          window.setTimeout(openModal, 250);
+        }
+
+        closeBtn.addEventListener('click', hideModal);
+        okBtn.addEventListener('click', ()=>{
+          if(chk.checked){ localStorage.setItem(MODAL_KEY, '1'); }
+          hideModal();
+        });
+
+        window.addEventListener('keydown', (e)=>{
+          if(backdrop.style.display==='flex' && e.key==='Escape'){ hideModal(); }
+        });
+        backdrop.addEventListener('click', (e)=>{
+          if(e.target === backdrop){ hideModal(); }
+        });
+      })();
+
+      // ===== AUTH NETLIFY IDENTITY =====
+      (function(){
+        const loginBtn   = document.getElementById('btn-login');
+        const logoutBtn  = document.getElementById('btn-logout');
+        const accountLnk = document.getElementById('link-account');
+
+        function show(el){ el.classList.remove('hidden'); }
+        function hide(el){ el.classList.add('hidden'); }
+
+        // Ouvre la modale d'auth
+        loginBtn.addEventListener('click', () => netlifyIdentity.open('login'));
+        logoutBtn.addEventListener('click', () => netlifyIdentity.logout());
+
+        function refreshUI(user){
+          if(user){
+            hide(loginBtn); show(logoutBtn); show(accountLnk);
+          }else{
+            show(loginBtn); hide(logoutBtn); hide(accountLnk);
+          }
+        }
+
+        if(window.netlifyIdentity){
+          netlifyIdentity.on('init', refreshUI);
+          netlifyIdentity.on('login', (user)=>{
+            refreshUI(user);
+            netlifyIdentity.close();
+            // Redirection optionnelle vers l'espace membre
+            window.location.href = '/compte.html';
+          });
+          netlifyIdentity.on('logout', ()=>{
+            refreshUI(null);
+            window.location.href = '/';
+          });
+          netlifyIdentity.init();
+        }
       })();
     </script>
   </footer>
