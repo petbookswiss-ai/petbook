@@ -1,0 +1,36 @@
+# Netlify configuration for PetBook
+# Protects the member area with Netlify Identity roles
+
+# If the user has the default 'user' role (i.e., is logged in), serve the page
+[[redirects]]
+  from = "/compte.html"
+  to = "/compte.html"
+  status = 200
+  force = true
+  conditions = { Role = ["user"] }
+
+# If the visitor is not authenticated, redirect to login
+[[redirects]]
+  from = "/compte.html"
+  to = "/login.html"
+  status = 302
+  force = true
+
+# (Optional) If later you put member content inside /compte/ directory,
+# these two rules will protect that entire folder as well.
+[[redirects]]
+  from = "/compte/*"
+  to = "/compte.html"
+  status = 200
+  force = true
+  conditions = { Role = ["user"] }
+
+[[redirects]]
+  from = "/compte/*"
+  to = "/login.html"
+  status = 302
+  force = true
+
+# Uncomment if you use Netlify Functions later
+# [functions]
+#   directory = "netlify/functions"

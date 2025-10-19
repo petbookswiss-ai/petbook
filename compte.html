@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Mon compte — PetBook</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <h1>Mon compte</h1>
+  <p id="hello"></p>
+  <button onclick="netlifyIdentity.logout()">Se déconnecter</button>
+
+  <script>
+    function guard() {
+      const user = netlifyIdentity.currentUser();
+      if (!user) {
+        window.location.replace("/login.html");
+        return;
+      }
+      document.getElementById("hello").textContent =
+        `Bonjour ${user.user_metadata?.full_name || user.email} 👋`;
+    }
+    netlifyIdentity.on("init", guard);
+    netlifyIdentity.on("login", guard);
+    netlifyIdentity.init();
+  </script>
+</body>
+</html>
