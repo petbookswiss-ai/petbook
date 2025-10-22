@@ -1,22 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#22c55e" />
-  <title>PetBook — Publier une annonce</title>
-
-  <!-- Thème global -->
-  <link rel="stylesheet" href="assets/style.css" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
-  <link rel="apple-touch-icon" href="images/logo-app.png" />
-
-  <!-- Netlify Identity (si tu gardes l’auth plus tard) -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- Supabase JS v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#22c55e" name="theme-color"/>
+<title>PetBook — Publier une annonce</title>
+<!-- Thème global -->
+<link href="assets/style.css" rel="stylesheet"/>
+<link href="images/favicon.png" rel="icon" type="image/png"/>
+<link href="images/logo-app.png" rel="apple-touch-icon"/>
+<!-- Netlify Identity (si tu gardes l’auth plus tard) -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- Supabase JS v2 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
     /* Compléments légers au thème global */
     :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb;--danger:#dc2626}
     .page-title{font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:.2px}
@@ -47,218 +45,190 @@
     .status{margin-top:10px;font-size:.95rem}
     .status.ok{color:#065f46}.status.err{color:#b91c1c}
   </style>
-</head>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.2/auth0-spa-js.production.js"></script></head>
 <body>
-
-  <!-- HEADER -->
-  <header>
-    <div class="container nav">
-      <a class="brand" href="index.html">
-        <img src="images/logo.png" alt="Logo PetBook" />
+<!-- HEADER -->
+<header>
+<div class="container nav">
+<a class="brand" href="index.html">
+<img alt="Logo PetBook" src="images/logo.png"/>
         PetBook
       </a>
-      <nav class="links">
-        <a href="annonces.html">Voir les annonces</a>
-        <a href="pet-alert.html">Pet Alert</a>
-        <a href="ajouter-annonce.html" class="btn primary">Publier</a>
-
-        <!-- Auth UI (optionnel) -->
-        <a id="link-account" href="compte.html" class="btn hidden">Mon compte</a>
-        <button id="btn-login" class="btn">Connexion</button>
-        <button id="btn-logout" class="btn hidden">Se déconnecter</button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="section">
-    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <h1 class="page-title">Publier une annonce</h1>
-      <a href="pet-alert.html" class="btn danger">⚠️ PetAlert / Urgences</a>
-    </div>
-  </section>
-
-  <main class="section">
-    <div class="container">
-      <!-- FORMULAIRE (côté client → Supabase) -->
-      <form id="annonce-form" class="card" autocomplete="on">
-        <div class="note" style="margin-bottom:14px;">
-          <strong>Info :</strong> La publication est soumise à vérification. Les annonces validées apparaîtront sur <a href="annonces.html">la page Annonces</a>.
+<nav class="links">
+<a href="annonces.html">Voir les annonces</a>
+<a href="pet-alert.html">Pet Alert</a>
+<a class="btn primary" href="ajouter-annonce.html">Publier</a>
+<!-- Auth UI (optionnel) -->
+<a class="btn hidden" href="compte.html" id="link-account">Mon compte</a>
+<button class="btn" id="btn-login">Connexion</button>
+<button class="btn hidden" id="btn-logout">Se déconnecter</button>
+</nav>
+</div>
+</header>
+<!-- HERO -->
+<section class="section">
+<div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+<h1 class="page-title">Publier une annonce</h1>
+<a class="btn danger" href="pet-alert.html">⚠️ PetAlert / Urgences</a>
+</div>
+</section>
+<main class="section">
+<div class="container">
+<!-- FORMULAIRE (côté client → Supabase) -->
+<form autocomplete="on" class="card" id="annonce-form">
+<div class="note" style="margin-bottom:14px;">
+<strong>Info :</strong> La publication est soumise à vérification. Les annonces validées apparaîtront sur <a href="annonces.html">la page Annonces</a>.
         </div>
-
-        <!-- ===== Informations générales ===== -->
-        <h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Informations générales</h3>
-        <div class="grid">
-          <div>
-            <label for="type">Type d’annonce *</label>
-            <select id="type" required>
-              <option value="" disabled selected>Choisir…</option>
-              <option value="Vente/Adoption">Vente / Adoption</option>
-              <option value="Accessoires">Accessoires</option>
-              <option value="Services">Services professionnels</option>
-            </select>
-            <div class="hint">Choisissez le type pour afficher les bons champs.</div>
-          </div>
-
-          <div>
-            <label for="title">Titre de l’annonce *</label>
-            <input id="title" type="text" placeholder="Ex. Chiot Border Collie / Aquarium complet / Toiletteur à Lausanne…" required>
-          </div>
-
-          <div>
-            <label for="categorie" id="label-categorie">Catégorie (Niveau 1) *</label>
-            <select id="categorie" required disabled>
-              <option value="" disabled selected>Choisir un type d’abord</option>
-            </select>
-            <div class="hint" id="hint-categorie">Ex. Vente : Animaux de compagnie ou Animaux de ferme.</div>
-          </div>
-
-          <div>
-            <label for="famille" id="label-famille">Espèce (Niveau 2) *</label>
-            <select id="famille" required disabled>
-              <option value="" disabled selected>Choisir une catégorie d’abord</option>
-            </select>
-            <div class="hint" id="hint-famille">Ex. Chien / Chat / Bovin / Apiculture…</div>
-          </div>
-
-          <div>
-            <label for="detail" id="label-detail">Accessoire (Niveau 3)</label>
-            <select id="detail" disabled>
-              <option value="" disabled selected>Choisir une famille d’abord</option>
-            </select>
-            <div class="hint" id="hint-detail">S’active pour Accessoires (ex. Niches, Ruches…).</div>
-          </div>
-
-          <div>
-            <label for="lieu">Localisation (Commune) *</label>
-            <input id="lieu" type="text" placeholder="Ex. Montreux" required>
-          </div>
-
-          <div>
-            <label for="canton">Canton *</label>
-            <select id="canton" required>
-              <option value="" disabled selected>Choisir…</option>
-              <option>VD</option><option>VS</option><option>GE</option><option>FR</option><option>NE</option>
-              <option>JU</option><option>BE</option><option>ZH</option><option>TI</option><option>AG</option>
-              <option>BL</option><option>BS</option><option>GR</option><option>GL</option><option>SG</option>
-              <option>SH</option><option>SO</option><option>SZ</option><option>TG</option><option>UR</option>
-              <option>AI</option><option>AR</option><option>LU</option><option>NW</option><option>OW</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="race">Race / Espèce (si applicable)</label>
-            <input id="race" type="text" placeholder="Ex. British Shorthair, Valais Blacknose, Python regius…">
-          </div>
-
-          <div>
-            <label for="age">Âge (approx.)</label>
-            <input id="age" type="text" placeholder="Ex. 3 mois, 2 ans, 2024…">
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- ===== Description ===== -->
-        <h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Description</h3>
-        <div>
-          <textarea id="desc" placeholder="Décris précisément : santé/état, vaccins/garantie, conditions, accessoires inclus, etc." required></textarea>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- ===== Tarif ===== -->
-        <h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Tarif</h3>
-        <div class="grid" style="align-items:end">
-          <div>
-            <label for="prix">Prix (CHF)</label>
-            <input id="prix" type="number" min="0" step="1" placeholder="Ex. 250">
-            <div class="hint">Laisse vide si « Gratuit » est coché, ou si c’est un service « sur devis ».</div>
-          </div>
-          <div class="row">
-            <label class="row"><input type="checkbox" id="gratuit" /> Gratuit</label>
-            <label class="row"><input type="checkbox" id="surdevis" /> Service / prix sur devis</label>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- ===== Photos / Médias ===== -->
-        <h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Photos / Médias</h3>
-        <div class="grid">
-          <div>
-            <label for="photos">Ajouter des photos (jusqu’à 6)</label>
-            <input id="photos" type="file" accept="image/*" multiple>
-            <div class="hint">Pour l’instant, les photos ne sont pas encore envoyées. (On le fera à l’étape suivante.)</div>
-          </div>
-          <div>
-            <label for="video">Lien vidéo (optionnel)</label>
-            <input id="video" type="url" placeholder="https://... (YouTube, TikTok, etc.)">
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- ===== Contact ===== -->
-        <h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Contact</h3>
-        <div class="grid">
-          <div>
-            <label for="nom">Nom / Entreprise *</label>
-            <input id="nom" type="text" required>
-          </div>
-          <div>
-            <label for="tel">Téléphone *</label>
-            <input id="tel" type="tel" placeholder="+41 ..." required>
-          </div>
-          <div>
-            <label for="email">E-mail *</label>
-            <input id="email" type="email" placeholder="exemple@mail.ch" required>
-          </div>
-          <div>
-            <label for="site">Site web (optionnel)</label>
-            <input id="site" type="url" placeholder="https://...">
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row" style="margin-bottom:8px">
-          <span class="pill">PetBook</span>
-          <span class="pill">Suisse</span>
-        </div>
-
-        <!-- Consentement -->
-        <div class="consent" style="margin-bottom:8px">
-          <input type="checkbox" id="cgu" required>
-          <label for="cgu">J’accepte les <a href="regles.html" target="_blank" rel="noopener">Règles</a>, les <a href="cgu.html" target="_blank" rel="noopener">CGU</a> et les <a href="infos-legales.html" target="_blank" rel="noopener">informations légales</a>.</label>
-        </div>
-
-        <div class="actions" style="margin-top:14px">
-          <button type="submit" class="btn primary" id="btn-submit">Publier l’annonce</button>
-          <button type="button" class="btn secondary" id="btn-preview">Aperçu</button>
-          <a href="annonces.html" class="btn secondary">← Retour</a>
-        </div>
-
-        <div id="status" class="status"></div>
-      </form>
-    </div>
-  </main>
-
-  <footer>
-    <div class="container footgrid">
-      <div>
-        <div class="title" style="font-weight:800">PetBook</div>
-        <p class="muted">Plateforme suisse pour animaux</p>
-      </div>
-      <div>
-        <div class="title" style="font-weight:800">Contact</div>
-        <p class="muted"><a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a></p>
-      </div>
-    </div>
-    <div class="container copy">© PetBook — Tous droits réservés.</div>
-  </footer>
-
-  <script>
+<!-- ===== Informations générales ===== -->
+<h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Informations générales</h3>
+<div class="grid">
+<div>
+<label for="type">Type d’annonce *</label>
+<select id="type" required="">
+<option disabled="" selected="" value="">Choisir…</option>
+<option value="Vente/Adoption">Vente / Adoption</option>
+<option value="Accessoires">Accessoires</option>
+<option value="Services">Services professionnels</option>
+</select>
+<div class="hint">Choisissez le type pour afficher les bons champs.</div>
+</div>
+<div>
+<label for="title">Titre de l’annonce *</label>
+<input id="title" placeholder="Ex. Chiot Border Collie / Aquarium complet / Toiletteur à Lausanne…" required="" type="text"/>
+</div>
+<div>
+<label for="categorie" id="label-categorie">Catégorie (Niveau 1) *</label>
+<select disabled="" id="categorie" required="">
+<option disabled="" selected="" value="">Choisir un type d’abord</option>
+</select>
+<div class="hint" id="hint-categorie">Ex. Vente : Animaux de compagnie ou Animaux de ferme.</div>
+</div>
+<div>
+<label for="famille" id="label-famille">Espèce (Niveau 2) *</label>
+<select disabled="" id="famille" required="">
+<option disabled="" selected="" value="">Choisir une catégorie d’abord</option>
+</select>
+<div class="hint" id="hint-famille">Ex. Chien / Chat / Bovin / Apiculture…</div>
+</div>
+<div>
+<label for="detail" id="label-detail">Accessoire (Niveau 3)</label>
+<select disabled="" id="detail">
+<option disabled="" selected="" value="">Choisir une famille d’abord</option>
+</select>
+<div class="hint" id="hint-detail">S’active pour Accessoires (ex. Niches, Ruches…).</div>
+</div>
+<div>
+<label for="lieu">Localisation (Commune) *</label>
+<input id="lieu" placeholder="Ex. Montreux" required="" type="text"/>
+</div>
+<div>
+<label for="canton">Canton *</label>
+<select id="canton" required="">
+<option disabled="" selected="" value="">Choisir…</option>
+<option>VD</option><option>VS</option><option>GE</option><option>FR</option><option>NE</option>
+<option>JU</option><option>BE</option><option>ZH</option><option>TI</option><option>AG</option>
+<option>BL</option><option>BS</option><option>GR</option><option>GL</option><option>SG</option>
+<option>SH</option><option>SO</option><option>SZ</option><option>TG</option><option>UR</option>
+<option>AI</option><option>AR</option><option>LU</option><option>NW</option><option>OW</option>
+</select>
+</div>
+<div>
+<label for="race">Race / Espèce (si applicable)</label>
+<input id="race" placeholder="Ex. British Shorthair, Valais Blacknose, Python regius…" type="text"/>
+</div>
+<div>
+<label for="age">Âge (approx.)</label>
+<input id="age" placeholder="Ex. 3 mois, 2 ans, 2024…" type="text"/>
+</div>
+</div>
+<div class="divider"></div>
+<!-- ===== Description ===== -->
+<h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Description</h3>
+<div>
+<textarea id="desc" placeholder="Décris précisément : santé/état, vaccins/garantie, conditions, accessoires inclus, etc." required=""></textarea>
+</div>
+<div class="divider"></div>
+<!-- ===== Tarif ===== -->
+<h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Tarif</h3>
+<div class="grid" style="align-items:end">
+<div>
+<label for="prix">Prix (CHF)</label>
+<input id="prix" min="0" placeholder="Ex. 250" step="1" type="number"/>
+<div class="hint">Laisse vide si « Gratuit » est coché, ou si c’est un service « sur devis ».</div>
+</div>
+<div class="row">
+<label class="row"><input id="gratuit" type="checkbox"> Gratuit</input></label>
+<label class="row"><input id="surdevis" type="checkbox"> Service / prix sur devis</input></label>
+</div>
+</div>
+<div class="divider"></div>
+<!-- ===== Photos / Médias ===== -->
+<h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Photos / Médias</h3>
+<div class="grid">
+<div>
+<label for="photos">Ajouter des photos (jusqu’à 6)</label>
+<input accept="image/*" id="photos" multiple="" type="file"/>
+<div class="hint">Pour l’instant, les photos ne sont pas encore envoyées. (On le fera à l’étape suivante.)</div>
+</div>
+<div>
+<label for="video">Lien vidéo (optionnel)</label>
+<input id="video" placeholder="https://... (YouTube, TikTok, etc.)" type="url"/>
+</div>
+</div>
+<div class="divider"></div>
+<!-- ===== Contact ===== -->
+<h3 style="margin:6px 0 10px;font-weight:800;color:#0f172a">Contact</h3>
+<div class="grid">
+<div>
+<label for="nom">Nom / Entreprise *</label>
+<input id="nom" required="" type="text"/>
+</div>
+<div>
+<label for="tel">Téléphone *</label>
+<input id="tel" placeholder="+41 ..." required="" type="tel"/>
+</div>
+<div>
+<label for="email">E-mail *</label>
+<input id="email" placeholder="exemple@mail.ch" required="" type="email"/>
+</div>
+<div>
+<label for="site">Site web (optionnel)</label>
+<input id="site" placeholder="https://..." type="url"/>
+</div>
+</div>
+<div class="divider"></div>
+<div class="row" style="margin-bottom:8px">
+<span class="pill">PetBook</span>
+<span class="pill">Suisse</span>
+</div>
+<!-- Consentement -->
+<div class="consent" style="margin-bottom:8px">
+<input id="cgu" required="" type="checkbox"/>
+<label for="cgu">J’accepte les <a href="regles.html" rel="noopener" target="_blank">Règles</a>, les <a href="cgu.html" rel="noopener" target="_blank">CGU</a> et les <a href="infos-legales.html" rel="noopener" target="_blank">informations légales</a>.</label>
+</div>
+<div class="actions" style="margin-top:14px">
+<button class="btn primary" id="btn-submit" type="submit">Publier l’annonce</button>
+<button class="btn secondary" id="btn-preview" type="button">Aperçu</button>
+<a class="btn secondary" href="annonces.html">← Retour</a>
+</div>
+<div class="status" id="status"></div>
+</form>
+</div>
+</main>
+<footer>
+<div class="container footgrid">
+<div>
+<div class="title" style="font-weight:800">PetBook</div>
+<p class="muted">Plateforme suisse pour animaux</p>
+</div>
+<div>
+<div class="title" style="font-weight:800">Contact</div>
+<p class="muted"><a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a></p>
+</div>
+</div>
+<div class="container copy">© PetBook — Tous droits réservés.</div>
+</footer>
+<script>
     // ===== Auth Netlify Identity (facultatif)
     (function(){
       const loginBtn   = document.getElementById('btn-login');
@@ -481,5 +451,22 @@
       }
     });
   </script>
-</body>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const BASE = location.origin;
+  const auth0 = await createAuth0Client({
+    domain: "dev-y6a4ysjvjidhk636.us.auth0.com",
+    client_id: "ItQnwH65emGqhsKau7BxDNSt1GASe08D",
+    authorizationParams: { redirect_uri: `${BASE}/compte.html` },
+    cacheLocation: "localstorage",
+    useRefreshTokens: true
+  });
+  try {
+    const ok = await auth0.isAuthenticated();
+    if (!ok) return location.replace(`${BASE}/login.html`);
+  } catch(e) {
+    return location.replace(`${BASE}/login.html`);
+  }
+});
+</script></body>
 </html>
