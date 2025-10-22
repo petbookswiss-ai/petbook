@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Annonces d’animaux en Suisse</title>
+  <meta name="description" content="Toutes les annonces d’animaux en Suisse : animaux de compagnie, animaux de ferme, exotiques, accessoires et services.">
+
+  <!-- Thème global -->
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+
+  <!-- Netlify Identity -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb;--bg:#f8fafc}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;color:var(--ink);background:#fff;margin:0}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1200px;margin:0 auto;padding:0 18px}
+
+    /* HEADER (identique à index) */
+    header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:26px}
+    .brand img{height:80px;width:auto}
+    @media(min-width:768px){.brand img{height:110px}}
+    .links{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .hidden{display:none !important}
+
+    /* HERO simple */
+    .section{padding:24px 0}
+    .hero{padding:18px 0 8px;border-bottom:1px solid var(--border)}
+    .page-title{font-size:clamp(22px,3vw,30px);font-weight:900}
+    .page-sub{color:var(--muted);margin-top:6px}
+
+    /* Filtres (pré-tri) */
+    .filters{position:sticky;top:72px;background:#fff;border-bottom:1px solid var(--border);z-index:40}
+    .filters-wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:12px 0}
+    @media (max-width:900px){.filters-wrap{grid-template-columns:1fr 1fr}}
+    .filter-btn{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;cursor:pointer;font-weight:800}
+    .filter-btn small{font-weight:600;color:var(--muted)}
+    .filter-btn[aria-pressed="true"]{outline:2px solid #93c5fd;background:#eff6ff}
+
+    /* Sous-onglets */
+    .subtabs{background:var(--bg);border-bottom:1px solid var(--border)}
+    .subtabs-wrap{display:flex;gap:8px;overflow:auto;padding:10px 0}
+    .tab{white-space:nowrap;border:1px solid var(--border);background:#fff;border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer}
+    .tab.active{background:#e0f2fe;border-color:#93c5fd}
+
+    /* Toolbar recherche/tri */
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 0}
+    .input{border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:260px}
+    select.input{padding-right:32px}
+
+    /* Grille d’annonces */
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:520px){.grid{grid-template-columns:1fr}}
+    .card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:4/3;background:#f3f4f6;display:grid;place-items:center;font-size:12px;color:#9ca3af}
+    .card-body{padding:12px}
+    .title{font-weight:800;margin:0 0 6px}
+    .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+    .price{margin-top:6px;font-weight:900;color:#047857}
+    .badge{font-size:11px;background:#ecfeff;border:1px solid #a5f3fc;color:#155e75;border-radius:6px;padding:2px 6px;margin-left:auto}
+
+    /* FOOTER (identique à index) */
+    footer{margin-top:36px;border-top:1px solid var(--border);background:#fff}
+    .footgrid{display:grid;grid-template-columns:1fr;gap:16px;padding:20px 0;text-align:center}
+    @media(min-width:768px){.footgrid{grid-template-columns:repeat(2,1fr);text-align:left}}
+    .copy{text-align:center;font-size:.85rem;color:#64748b;padding:10px 0}
+    .footer-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+    .footer-links a{color:var(--brand);text-decoration:underline;font-weight:700}
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="images/logo.png" alt="Logo PetBook" />
+        PetBook
+      </a>
+      <nav class="links">
+        <a href="annonces.html" aria-current="page">Voir les annonces</a>
+        <a href="pet-alert.html">Pet Alert</a>
+        <a href="mailto:petbookswiss@gmail.com">Contact</a>
+        <a href="ajouter-annonce.html" class="btn primary">Publier</a>
+
+        <!-- Auth UI -->
+        <a id="link-account" href="compte.html" class="btn hidden">Mon compte</a>
+        <button id="btn-login" class="btn">Connexion</button>
+        <button id="btn-logout" class="btn hidden">Se déconnecter</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="section hero">
+    <div class="container">
+      <h1 class="page-title">Toutes les annonces d’animaux en Suisse 🇨🇭</h1>
+      <p class="page-sub">Filtre par catégorie, recherche par mot-clé et tri par prix/récence. Publie la tienne gratuitement (selon nos règles) 🐾</p>
+    </div>
+  </section>
+
+  <!-- Filtres -->
+  <nav class="filters">
+    <div class="container">
+      <div class="filters-wrap" id="filters">
+        <button class="filter-btn" data-cat="ferme" aria-pressed="false">🐑 Animaux de ferme<br><small>Bovins, ovins, caprins…</small></button>
+        <button class="filter-btn" data-cat="compagnie" aria-pressed="false">🐶 Compagnie<br><small>Chiens, chats, rongeurs…</small></button>
+        <button class="filter-btn" data-cat="exotiques" aria-pressed="false">🦎 Exotiques<br><small>Reptiles, oiseaux, poissons…</small></button>
+        <button class="filter-btn" data-cat="accessoires" aria-pressed="false">🛒 Accessoires<br><small>Laisses, cages, litières…</small></button>
+        <button class="filter-btn" data-cat="services" aria-pressed="false">🧰 Services pro<br><small>Vétos, éducateurs, pensions…</small></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sous-onglets -->
+  <div class="subtabs">
+    <div class="container">
+      <div id="subtabs" class="subtabs-wrap"></div>
+    </div>
+  </div>
+
+  <!-- Toolbar + Grille -->
+  <section class="container">
+    <div class="toolbar">
+      <input id="q" class="input" type="search" placeholder="Rechercher (titre, lieu, mot-clé)…">
+      <select id="tri" class="input" aria-label="Trier">
+        <option value="recent">Plus récentes</option>
+        <option value="prix-asc">Prix croissant</option>
+        <option value="prix-desc">Prix décroissant</option>
+      </select>
+      <span style="margin-left:auto;color:#6b7280;font-size:13px" id="count"></span>
+    </div>
+
+    <div id="grid" class="grid">
+      <!-- ——— Exemples (tu remplaceras par tes vraies cartes quand tu lieras une data source) ——— -->
+      <article class="card" data-cat="ferme" data-sub="bovins" data-title="Génisse Simmental" data-lieu="Fribourg" data-prix="1800">
+        <div class="thumb">Photo</div>
+        <div class="card-body">
+          <h3 class="title">Génisse Simmental — 18 mois</h3>
+          <div class="meta"><span>Fribourg</span><span>•</span><span>Bovins</span><span class="badge">Ferme</span></div>
+          <div class="price">1 800 CHF</div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="compagnie" data-sub="chiens" data-title="Chiot Border Collie LOF" data-lieu="Lausanne" data-prix="950">
+        <div class="thumb">Photo</div>
+        <div class="card-body">
+          <h3 class="title">Chiot Border Collie LOF</h3>
+          <div class="meta"><span>Lausanne</span><span>•</span><span>Chiens</span><span class="badge">Compagnie</span></div>
+          <div class="price">950 CHF</div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="exotiques" data-sub="reptiles" data-title="Python regius juvénile" data-lieu="Genève" data-prix="220">
+        <div class="thumb">Photo</div>
+        <div class="card-body">
+          <h3 class="title">Python regius juvénile</h3>
+          <div class="meta"><span>Genève</span><span>•</span><span>Reptiles</span><span class="badge">Exotique</span></div>
+          <div class="price">220 CHF</div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="services" data-sub="toilettage" data-title="Toiletteur à domicile" data-lieu="Neuchâtel" data-prix="0">
+        <div class="thumb">Photo</div>
+        <div class="card-body">
+          <h3 class="title">Toiletteur à domicile</h3>
+          <div class="meta"><span>Neuchâtel</span><span>•</span><span>Toilettage</span><span class="badge">Service</span></div>
+          <div class="price">Sur devis</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footgrid">
+      <div>
+        <div class="title" style="font-weight:800">PetBook</div>
+        <p class="muted">Plateforme suisse pour animaux</p>
+      </div>
+      <div>
+        <div class="title" style="font-weight:800">Contact</div>
+        <p class="muted"><a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a></p>
+        <div class="footer-links">
+          <a href="infos-legales.html">Infos légales</a>
+        </div>
+      </div>
+    </div>
+    <div class="container copy">© PetBook — Tous droits réservés.</div>
+  </footer>
+
+  <script>
+    // ===== AUTH NETLIFY IDENTITY (mêmes comportements que l’index)
+    (function(){
+      const loginBtn   = document.getElementById('btn-login');
+      const logoutBtn  = document.getElementById('btn-logout');
+      const accountLnk = document.getElementById('link-account');
+
+      function show(el){ el.classList.remove('hidden'); }
+      function hide(el){ el.classList.add('hidden'); }
+
+      if(window.netlifyIdentity){
+        loginBtn.addEventListener('click', () => netlifyIdentity.open('login'));
+        logoutBtn.addEventListener('click', () => netlifyIdentity.logout());
+
+        function refreshUI(user){
+          if(user){ hide(loginBtn); show(logoutBtn); show(accountLnk); }
+          else    { show(loginBtn); hide(logoutBtn); hide(accountLnk); }
+        }
+        netlifyIdentity.on('init',  refreshUI);
+        netlifyIdentity.on('login', (user)=>{ refreshUI(user); netlifyIdentity.close(); window.location.href='compte.html'; });
+        netlifyIdentity.on('logout',()=>{ refreshUI(null);  window.location.href='index.html'; });
+        netlifyIdentity.init();
+      }
+    })();
+
+    // ===== Données sous-onglets
+    const SUBTABS = {
+      ferme: ["Tous","Bovins","Ovins","Caprins","Équidés","Porcins","Volailles","Lapins","Abeilles","Poissons"],
+      compagnie: ["Tous","Chiens","Chats","Lapins & rongeurs","Oiseaux","Poissons"],
+      exotiques: ["Tous","Reptiles","Oiseaux","Poissons","Invertébrés"],
+      accessoires: ["Tous","Chiens","Chats","Rongeurs","Oiseaux","Aquariophilie","Reptiles","Équitation"],
+      services: ["Tous","Vétérinaires","Éducateurs","Pensions","Toilettage","Transport","Photographe"]
+    };
+
+    const filters = document.getElementById('filters');
+    const subtabs = document.getElementById('subtabs');
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const tri = document.getElementById('tri');
+    const count = document.getElementById('count');
+    let currentCat = null;
+    let currentSub = "Tous";
+
+    function updateCount(){
+      const visible = [...grid.children].filter(c => !c.classList.contains('hidden')).length;
+      count.textContent = visible + " annonce" + (visible>1?"s":"");
+    }
+
+    function renderSubtabs(cat){
+      subtabs.innerHTML = "";
+      (SUBTABS[cat]||["Tous"]).forEach((name,i)=>{
+        const b = document.createElement('button');
+        b.className = 'tab' + (i===0?' active':'');
+        b.textContent = name;
+        b.addEventListener('click', ()=>{
+          [...subtabs.children].forEach(t=>t.classList.remove('active'));
+          b.classList.add('active');
+          currentSub = name;
+          applyFilters();
+        });
+        subtabs.appendChild(b);
+      });
+    }
+
+    function applyFilters(){
+      const term = q.value.trim().toLowerCase();
+      const cards = [...grid.children];
+      cards.forEach(card=>{
+        const cat = card.dataset.cat;
+        const sub = (card.dataset.sub || "").toLowerCase();
+        const title = (card.dataset.title||"").toLowerCase();
+        const lieu = (card.dataset.lieu||"").toLowerCase();
+        let ok = true;
+        if (currentCat && cat !== currentCat) ok = false;
+        if (ok && currentSub && currentSub!=="Tous"){
+          ok = sub.includes(currentSub.toLowerCase());
+        }
+        if (ok && term){
+          ok = (title.includes(term) || lieu.includes(term));
+        }
+        card.classList.toggle('hidden', !ok);
+      });
+
+      const sort = tri.value;
+      cards.sort((a,b)=>{
+        if (sort==="recent") return 0;
+        const pa = parseFloat(a.dataset.prix||"0");
+        const pb = parseFloat(b.dataset.prix||"0");
+        return sort==="prix-asc" ? (pa-pb) : (pb-pa);
+      }).forEach(c=>grid.appendChild(c));
+
+      updateCount();
+    }
+
+    filters.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      [...filters.querySelectorAll('.filter-btn')].forEach(b=>b.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      currentCat = btn.dataset.cat;
+      currentSub = "Tous";
+      renderSubtabs(currentCat);
+      applyFilters();
+      window.scrollTo({top: document.querySelector('.subtabs').offsetTop - 1, behavior:'smooth'});
+    });
+
+    q.addEventListener('input', applyFilters);
+    tri.addEventListener('change', applyFilters);
+    updateCount();
+  </script>
+</body>
+</html>

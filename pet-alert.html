@@ -1,1 +1,629 @@
-<!doctype html><html lang='fr'><head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='theme-color' content='#22c55e'/><link rel='stylesheet' href='assets/style.css'/><title>Pet-alert — PetBook</title></head><body><header><div class='container nav'><a class='brand' href='index.html'><img src='/images/logo.svg' alt='Logo' style='height:26px;width:auto'/>PetBook</a><nav class='links'><a href='animals.html'>Vente</a><a href='services.html'>Prestations</a><a href='pet-alert.html'>Pet Alert</a><a href='publish.html' class='btn primary'>Publier</a><a href='auth.html'>Connexion</a></nav></div></header><main class='section'><div class='container'><div class='card'><div class='body'><h1>Pet-alert</h1><p class='muted'>Contenu à venir.</p></div></div></div></main><footer><div class='container footgrid'><div><div class='title' style='font-weight:800'>PetBook</div><p class='muted'>Plateforme suisse pour animaux</p></div><div><div class='title' style='font-weight:800'>Contact</div><p class='muted'><a href='mailto:petbookswiss@gmail.com'>petbookswiss@gmail.com</a></p></div></div><div class='container copy'>© PetBook.</div><script src='assets/chat-milo.js'></script></footer></body></html>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Pet Alert (Perdus • Trouvés • Vus • Décédés)</title>
+  <meta name="description" content="Page unique Pet Alert: publier et voir toutes les alertes en Suisse avec carte et filtres.">
+
+  <!-- Thème global -->
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+
+  <!-- Netlify Identity -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb;--bg:#f8fafc}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;color:var(--ink);background:#fff;margin:0}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1200px;margin:0 auto;padding:0 18px}
+
+    header{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:26px}
+    .brand img{height:80px;width:auto}
+    @media(min-width:768px){.brand img{height:110px}}
+    .links{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer;background:#fff}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.danger{border-color:#fecaca;background:#fee2e2;color:#7f1d1d}
+    .btn.success{border-color:#bbf7d0;background:#dcfce7;color:#14532d}
+    .hidden{display:none !important}
+
+    .section{padding:24px 0}
+    .hero{padding:18px 0 8px;border-bottom:1px solid var(--border)}
+    .page-title{font-size:clamp(22px,3vw,30px);font-weight:900}
+    .page-sub{color:var(--muted);margin-top:6px}
+    .cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+    /* Filtres */
+    .filters{position:sticky;top:72px;background:#fff;border-bottom:1px solid var(--border);z-index:50}
+    .filters-wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0}
+    .seg{display:inline-flex;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .seg button{padding:10px 14px;border:0;background:#fff;font-weight:800;cursor:pointer}
+    .seg button[aria-pressed="true"]{background:#e0f2fe;border-right:1px solid #93c5fd}
+    .seg button+button{border-left:1px solid var(--border)}
+    .chipbar{display:flex;gap:8px;overflow:auto}
+    .chip{white-space:nowrap;border:1px solid var(--border);background:#fff;border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer}
+    .chip.active{background:#e0f2fe;border-color:#93c5fd}
+    .input{border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:220px}
+    select.input{padding-right:28px}
+    .hint{color:#6b7280;font-size:13px;margin-left:auto}
+
+    /* Carte + grille */
+    .map-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:14px 0;background:#f8fafc}
+    #map{height:360px;width:100%}
+    .legend{display:flex;gap:8px;flex-wrap:wrap;padding:8px;background:#fff;border-top:1px solid var(--border)}
+    .dot{width:10px;height:10px;border-radius:999px;display:inline-block;border:1px solid #0001;margin-right:6px}
+    .dot.lost{background:#ef4444}
+    .dot.found{background:#10b981}
+    .dot.seen{background:#3b82f6}
+    .dot.dead{background:#6b7280}
+    .dot.resolved{background:#a3a3a3}
+
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:520px){.grid{grid-template-columns:1fr}}
+    .card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:4/3;background:#f3f4f6;display:grid;place-items:center;font-size:12px;color:#9ca3af}
+    .card-body{padding:12px;display:flex;flex-direction:column;gap:6px}
+    .title{font-weight:800;margin:0}
+    .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+    .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+    .badge{font-size:11px;background:#ecfeff;border:1px solid #a5f3fc;color:#155e75;border-radius:6px;padding:2px 6px}
+    .badge.lost{background:#fee2e2;border-color:#fecaca;color:#7f1d1d}
+    .badge.found{background:#dcfce7;border-color:#bbf7d0;color:#14532d}
+    .badge.seen{background:#dbeafe;border-color:#bfdbfe;color:#1e3a8a}
+    .badge.dead{background:#e5e7eb;border-color:#d1d5db;color:#374151}
+    .badge.resolved{background:#f3f4f6;border-color:#e5e7eb;color:#374151}
+    .actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .card small{color:#6b7280}
+
+    /* Form publier */
+    details.formbox{border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff}
+    details.formbox summary{font-weight:800;cursor:pointer;list-style:none}
+    details.formbox summary::marker{display:none}
+    .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+    .form-grid > div{display:flex;flex-direction:column;gap:6px}
+    .form-grid input,.form-grid select,.form-grid textarea{border:1px solid var(--border);border-radius:10px;padding:10px}
+    .row{grid-column:1/-1}
+    .muted{color:#6b7280;font-size:12px}
+
+    footer{margin-top:36px;border-top:1px solid var(--border);background:#fff}
+    .footgrid{display:grid;grid-template-columns:1fr;gap:16px;padding:20px 0;text-align:center}
+    @media(min-width:768px){.footgrid{grid-template-columns:repeat(2,1fr);text-align:left}}
+    .copy{text-align:center;font-size:.85rem;color:#64748b;padding:10px 0}
+    .footer-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+    .footer-links a{color:var(--brand);text-decoration:underline;font-weight:700}
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="images/logo.png" alt="Logo PetBook" />
+        PetBook
+      </a>
+      <nav class="links">
+        <a href="annonces.html">Voir les annonces</a>
+        <a href="pet-alert.html" aria-current="page">Pet Alert</a>
+        <a href="mailto:petbookswiss@gmail.com">Contact</a>
+        <a href="#publier" class="btn primary">Publier une alerte</a>
+
+        <!-- Auth UI -->
+        <a id="link-account" href="compte.html" class="btn hidden">Mon compte</a>
+        <button id="btn-login" class="btn">Connexion</button>
+        <button id="btn-logout" class="btn hidden">Se déconnecter</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="section hero">
+    <div class="container">
+      <h1 class="page-title">Pet Alert — Perdus • Trouvés • Vus • Décédés 🇨🇭</h1>
+      <p class="page-sub">Publie une alerte (gratuit), vois les signalements sur la carte, filtre par statut/espèce/canton. Les annonces expirent automatiquement.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#publier" onclick="document.getElementById('box-publier').open=true">➕ Publier</a>
+        <a class="btn" href="#liste">👀 Voir la liste</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULAIRE INLINE -->
+  <section class="container section" id="publier">
+    <details id="box-publier" class="formbox">
+      <summary>➕ Publier une alerte (simple)</summary>
+      <form id="alert-form">
+        <div class="form-grid">
+          <div>
+            <label>Statut</label>
+            <select name="statut" required>
+              <option value="perdu">Perdu</option>
+              <option value="trouve">Trouvé (en sécurité)</option>
+              <option value="vu">Vu (aperçu)</option>
+              <option value="decede">Décédé</option>
+            </select>
+          </div>
+          <div>
+            <label>Espèce</label>
+            <select name="espece" required>
+              <option value="chiens">Chiens</option>
+              <option value="chats">Chats</option>
+              <option value="oiseaux">Oiseaux</option>
+              <option value="nac">NAC</option>
+              <option value="ferme">Ferme</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+          <div>
+            <label>Canton</label>
+            <select name="canton" required>
+              <option value="">—</option>
+              <option>VD</option><option>VS</option><option>GE</option><option>FR</option><option>NE</option>
+              <option>JU</option><option>BE</option><option>ZH</option><option>ZG</option><option>TI</option>
+              <option>AG</option><option>BS</option><option>BL</option><option>SO</option><option>LU</option>
+              <option>SG</option><option>GR</option><option>TG</option><option>SH</option><option>AI</option>
+              <option>AR</option><option>GL</option><option>NW</option><option>OW</option><option>UR</option>
+            </select>
+          </div>
+          <div>
+            <label>Date de l’événement</label>
+            <input type="date" name="dateEvt" required />
+          </div>
+
+          <div class="row">
+            <label>Titre (ex: “Border Collie Néo — collier rouge”)</label>
+            <input type="text" name="titre" required placeholder="Titre court et clair" />
+          </div>
+          <div>
+            <label>Lieu (texte)</label>
+            <input type="text" name="lieu" placeholder="Quartier, rue…" />
+          </div>
+          <div>
+            <label>Téléphone</label>
+            <input type="tel" name="tel" placeholder="+41..." />
+          </div>
+          <div>
+            <label>Email</label>
+            <input type="email" name="email" placeholder="contact@example.ch" />
+          </div>
+
+          <div class="row">
+            <label>Particularités / Infos</label>
+            <textarea name="infos" rows="3" placeholder="Couleur, collier, comportement, puce, etc."></textarea>
+          </div>
+          <div>
+            <label>Photo (URL)</label>
+            <input type="url" name="photo" placeholder="https://..." />
+          </div>
+          <div>
+            <label>Latitude</label>
+            <input type="number" name="lat" step="0.000001" placeholder="Clique sur la carte" />
+          </div>
+          <div>
+            <label>Longitude</label>
+            <input type="number" name="lng" step="0.000001" placeholder="Clique sur la carte" />
+          </div>
+
+          <div class="row">
+            <button class="btn primary" type="submit">Publier l’alerte</button>
+            <span class="muted">Astuce: clique sur la carte pour remplir lat/lng.</span>
+          </div>
+        </div>
+      </form>
+    </details>
+  </section>
+
+  <!-- FILTRES -->
+  <nav class="filters" aria-label="Filtres Pet Alert">
+    <div class="container">
+      <div class="filters-wrap">
+        <div class="seg" role="tablist" aria-label="Statut">
+          <button role="tab" aria-pressed="true"  data-statut="tous">Tous</button>
+          <button role="tab" aria-pressed="false" data-statut="perdu">Perdu</button>
+          <button role="tab" aria-pressed="false" data-statut="trouve">Trouvé</button>
+          <button role="tab" aria-pressed="false" data-statut="vu">Vu</button>
+          <button role="tab" aria-pressed="false" data-statut="decede">Décédé</button>
+          <button role="tab" aria-pressed="false" data-statut="retrouve">Retrouvé</button>
+        </div>
+
+        <div id="chips" class="chipbar" aria-label="Espèce">
+          <button class="chip active" data-espece="toutes">Toutes espèces</button>
+          <button class="chip" data-espece="chiens">Chiens</button>
+          <button class="chip" data-espece="chats">Chats</button>
+          <button class="chip" data-espece="oiseaux">Oiseaux</button>
+          <button class="chip" data-espece="nac">NAC</button>
+          <button class="chip" data-espece="ferme">Ferme</button>
+          <button class="chip" data-espece="autre">Autre</button>
+        </div>
+
+        <select id="canton" class="input" aria-label="Canton">
+          <option value="">Tous cantons</option>
+          <option>VD</option><option>VS</option><option>GE</option><option>FR</option><option>NE</option>
+          <option>JU</option><option>BE</option><option>ZH</option><option>ZG</option><option>TI</option>
+          <option>AG</option><option>BS</option><option>BL</option><option>SO</option><option>LU</option>
+          <option>SG</option><option>GR</option><option>TG</option><option>SH</option><option>AI</option>
+          <option>AR</option><option>GL</option><option>NW</option><option>OW</option><option>UR</option>
+        </select>
+
+        <input id="q" class="input" type="search" placeholder="Recherche (titre, lieu, info)…" />
+        <select id="tri" class="input" aria-label="Trier">
+          <option value="recent">Plus récentes</option>
+          <option value="ancien">Plus anciennes</option>
+        </select>
+        <label class="muted" style="display:flex;align-items:center;gap:6px">
+          <input type="checkbox" id="hideResolved" checked /> Masquer “Retrouvé”
+        </label>
+
+        <span class="hint" id="count"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CARTE -->
+  <section class="container">
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="legend">
+        <span><i class="dot lost"></i>Perdu</span>
+        <span><i class="dot found"></i>Trouvé</span>
+        <span><i class="dot seen"></i>Vu</span>
+        <span><i class="dot dead"></i>Décédé</span>
+        <span><i class="dot resolved"></i>Retrouvé</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTE -->
+  <section class="container" id="liste" aria-live="polite" aria-busy="false">
+    <div class="toolbar">
+      <span class="muted">Clique une épingle pour ouvrir la fiche ↑</span>
+    </div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footgrid">
+      <div>
+        <div class="title" style="font-weight:800">PetBook</div>
+        <p class="muted">Plateforme suisse pour animaux</p>
+      </div>
+      <div>
+        <div class="title" style="font-weight:800">Contact</div>
+        <p class="muted"><a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a></p>
+        <div class="footer-links"><a href="infos-legales.html">Infos légales</a></div>
+      </div>
+    </div>
+    <div class="container copy">© PetBook — Tous droits réservés.</div>
+  </footer>
+
+  <script>
+  // ===== AUTH (identique)
+  (function(){
+    const loginBtn   = document.getElementById('btn-login');
+    const logoutBtn  = document.getElementById('btn-logout');
+    const accountLnk = document.getElementById('link-account');
+    function show(el){ el.classList.remove('hidden'); }
+    function hide(el){ el.classList.add('hidden'); }
+    if(window.netlifyIdentity){
+      loginBtn.addEventListener('click', () => netlifyIdentity.open('login'));
+      logoutBtn.addEventListener('click', () => netlifyIdentity.logout());
+      function refreshUI(user){
+        if(user){ hide(loginBtn); show(logoutBtn); show(accountLnk); }
+        else    { show(loginBtn); hide(logoutBtn); hide(accountLnk); }
+      }
+      netlifyIdentity.on('init',  refreshUI);
+      netlifyIdentity.on('login', (user)=>{ refreshUI(user); netlifyIdentity.close(); window.location.href='compte.html'; });
+      netlifyIdentity.on('logout',()=>{ refreshUI(null);  window.location.href='index.html'; });
+      netlifyIdentity.init();
+    }
+  })();
+
+  // ===== Données (remplacer par ta DB plus tard)
+  const STORAGE_KEY = 'petalert_data';
+
+  function loadData(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return seed();
+      return JSON.parse(raw);
+    } catch(e){ return seed(); }
+  }
+  function saveData(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+
+  function seed(){
+    const today = new Date();
+    const d = (off)=> new Date(today.getTime() - off*86400000).toISOString().slice(0,10);
+    const arr = [
+      { id: crypto.randomUUID(), statut:'perdu',   espece:'chiens',  canton:'VD', titre:'Border Collie “Néo” — collier rouge', lieu:'Lausanne', lat:46.520, lng:6.633, dateEvt:d(2), createdAt:d(2), infos:'Très sociable, puce oui', phone:'+41790000000', email:'', photo:'', resolved:false },
+      { id: crypto.randomUUID(), statut:'trouve',  espece:'chats',   canton:'GE', titre:'Chat tigré trouvé — sans collier',    lieu:'Plainpalais', lat:46.197, lng:6.140, dateEvt:d(3), createdAt:d(3), infos:'Affectueux, chez un particulier', phone:'', email:'ex@ex.ch', photo:'', resolved:false },
+      { id: crypto.randomUUID(), statut:'vu',      espece:'oiseaux', canton:'FR', titre:'Perruche bleue aperçue',              lieu:'Bulle',      lat:46.614, lng:7.055, dateEvt:d(4), createdAt:d(4), infos:'Siffle quand on claque des doigts', phone:'', email:'', photo:'', resolved:false },
+      { id: crypto.randomUUID(), statut:'decede',  espece:'ferme',   canton:'VS', titre:'Chèvre retrouvée décédée',            lieu:'Sion',       lat:46.233, lng:7.360, dateEvt:d(0), createdAt:d(0), infos:'Signalée par la commune', phone:'', email:'', photo:'', resolved:false },
+      { id: crypto.randomUUID(), statut:'retrouve',espece:'chiens',  canton:'NE', titre:'Jack Russell — RETROUVÉ',             lieu:'Neuchâtel',  lat:46.991, lng:6.931, dateEvt:d(7), createdAt:d(7), infos:'Merci à tous 🙌', phone:'', email:'', photo:'', resolved:true },
+    ];
+    saveData(arr);
+    return arr;
+  }
+
+  // Expiration: 'decede' => 14 jours, autres => 30 jours. 'retrouve' => retirer.
+  function purge(list){
+    const now = Date.now();
+    const days = (a,b)=> Math.floor( (a-b)/86400000 );
+    const kept = list.filter(item=>{
+      if(item.statut === 'retrouve') return false; // retiré
+      const created = new Date(item.createdAt||item.dateEvt).getTime();
+      const age = days(now, created);
+      const limit = item.statut==='decede' ? 14 : 30;
+      return age <= limit;
+    });
+    if(kept.length !== list.length) saveData(kept);
+    return kept;
+  }
+
+  let DATA = purge(loadData());
+
+  // ===== Carte Leaflet
+  const map = L.map('map',{ scrollWheelZoom:true }).setView([46.8182, 8.2275], 7);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution:'© OpenStreetMap' }).addTo(map);
+
+  const markersLayer = L.layerGroup().addTo(map);
+
+  function colorFor(statut){
+    return statut==='perdu'   ? '#ef4444' :
+           statut==='trouve'  ? '#10b981' :
+           statut==='vu'      ? '#3b82f6' :
+           statut==='decede'  ? '#6b7280' :
+           /* retrouvé */       '#a3a3a3';
+  }
+
+  function addMarker(item){
+    if(!(item.lat && item.lng)) return;
+    const m = L.circleMarker([item.lat, item.lng],{
+      radius: 8, weight: 2, color:'#00000022', fillOpacity:.9, fillColor: colorFor(item.statut)
+    }).addTo(markersLayer);
+    const badge =
+      item.statut==='perdu'   ? '<span class="badge lost">Perdu</span>' :
+      item.statut==='trouve'  ? '<span class="badge found">Trouvé</span>' :
+      item.statut==='vu'      ? '<span class="badge seen">Vu</span>' :
+      item.statut==='decede'  ? '<span class="badge dead">Décédé</span>' :
+                                '<span class="badge resolved">Retrouvé</span>';
+    m.bindPopup(`
+      <div style="font-weight:800;margin-bottom:4px">${escapeHtml(item.titre||'Alerte')}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0">${badge}
+        <span class="badge">${item.espece}</span>
+        <span class="badge">${item.canton} — ${escapeHtml(item.lieu||'')}</span>
+      </div>
+      <div class="meta">Le ${formatDate(item.dateEvt||item.createdAt)}</div>
+      <div style="margin-top:6px">${escapeHtml(item.infos||'')}</div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+        ${item.phone?`<a class="btn" href="tel:${item.phone}">📞 Appeler</a>`:''}
+        ${item.email?`<a class="btn" href="mailto:${item.email}?subject=Alerte%20PetBook">✉️ Contacter</a>`:''}
+        <button class="btn success" onclick="markResolved('${item.id}')">✔️ Retrouvé</button>
+      </div>
+    `);
+    m.on('click', ()=> {
+      // scroll la carte correspondante
+      const el = document.querySelector(`[data-id="${item.id}"]`);
+      if(el){ el.classList.add('pulse'); setTimeout(()=>el.classList.remove('pulse'), 600); el.scrollIntoView({behavior:'smooth', block:'center'}); }
+    });
+  }
+
+  // ===== Rendu liste
+  const grid = document.getElementById('grid');
+  const q = document.getElementById('q');
+  const tri = document.getElementById('tri');
+  const cantonSel = document.getElementById('canton');
+  const count = document.getElementById('count');
+  const hideResolved = document.getElementById('hideResolved');
+  let currentStatut = 'tous';
+  let currentEspece = 'toutes';
+
+  document.querySelectorAll('.seg button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      currentStatut = btn.dataset.statut;
+      renderAll();
+    });
+  });
+
+  document.querySelectorAll('#chips .chip').forEach(ch=>{
+    ch.addEventListener('click', ()=>{
+      document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('active'));
+      ch.classList.add('active');
+      currentEspece = ch.dataset.espece;
+      renderAll();
+    });
+  });
+
+  q.addEventListener('input', renderAll);
+  tri.addEventListener('change', renderAll);
+  cantonSel.addEventListener('change', renderAll);
+  hideResolved.addEventListener('change', renderAll);
+
+  function formatDate(iso){
+    try{
+      const [y,m,d] = (iso||'').split('-');
+      return `${d}.${m}.${y}`;
+    }catch{ return iso||''; }
+  }
+
+  function escapeHtml(s){
+    return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  }
+
+  function cardBadge(statut){
+    return statut==='perdu'   ? 'lost' :
+           statut==='trouve'  ? 'found' :
+           statut==='vu'      ? 'seen' :
+           statut==='decede'  ? 'dead' : 'resolved';
+  }
+
+  function fitsFilters(item){
+    if (hideResolved.checked && item.statut==='retrouve') return false;
+    if (currentStatut!=='tous' && item.statut!==currentStatut) return false;
+    if (currentEspece!=='toutes' && item.espece!==currentEspece) return false;
+    const cant = cantonSel.value;
+    if (cant && item.canton!==cant) return false;
+    const term = q.value.trim().toLowerCase();
+    if (term){
+      const hay = `${item.titre} ${item.lieu} ${item.infos}`.toLowerCase();
+      if (!hay.includes(term)) return false;
+    }
+    return true;
+  }
+
+  function renderAll(){
+    // purge avant rendu
+    DATA = purge(DATA);
+    markersLayer.clearLayers();
+    grid.innerHTML = '';
+
+    // tri date
+    const sorted = [...DATA].sort((a,b)=>{
+      const da = (a.dateEvt||a.createdAt);
+      const db = (b.dateEvt||b.createdAt);
+      if (tri.value==='recent') return db.localeCompare(da);
+      else return da.localeCompare(db);
+    });
+
+    // rendu
+    let bounds = [];
+    sorted.forEach(item=>{
+      if(!fitsFilters(item)) return;
+      // carte
+      addMarker(item);
+      if(item.lat && item.lng) bounds.push([item.lat, item.lng]);
+
+      // liste
+      const badgeClass = cardBadge(item.statut);
+      const statutLabel =
+        item.statut==='perdu'   ? 'Perdu' :
+        item.statut==='trouve'  ? 'Trouvé' :
+        item.statut==='vu'      ? 'Vu' :
+        item.statut==='decede'  ? 'Décédé' : 'Retrouvé';
+
+      const photo = item.photo ? `<img src="${escapeHtml(item.photo)}" alt="" style="width:100%;height:100%;object-fit:cover">` : 'Photo';
+      const phoneBtn = item.phone ? `<a class="btn" href="tel:${item.phone}">📞 Appeler</a>` : '';
+      const emailBtn = item.email ? `<a class="btn" href="mailto:${item.email}?subject=Pet%20Alert">✉️ Contacter</a>` : '';
+      const resolveBtn = item.statut!=='retrouve' ? `<button class="btn success" onclick="markResolved('${item.id}')">✔️ Retrouvé</button>` : '';
+      const delBtn = `<button class="btn danger" onclick="deleteAlert('${item.id}')">🗑️ Supprimer</button>`;
+
+      const art = document.createElement('article');
+      art.className = 'card';
+      art.dataset.id = item.id;
+      art.innerHTML = `
+        <div class="thumb">${photo}</div>
+        <div class="card-body">
+          <h3 class="title">${escapeHtml(item.titre||'Alerte')}</h3>
+          <div class="badges">
+            <span class="badge ${badgeClass}">${statutLabel}</span>
+            <span class="badge">${item.espece}</span>
+            <span class="badge">${item.canton} — ${escapeHtml(item.lieu||'')}</span>
+          </div>
+          <div class="meta"><span>Le ${formatDate(item.dateEvt||item.createdAt)}</span></div>
+          ${item.infos?`<small>${escapeHtml(item.infos)}</small>`:''}
+          <div class="actions">
+            ${phoneBtn}${emailBtn}${resolveBtn}${delBtn}
+          </div>
+        </div>
+      `;
+      grid.appendChild(art);
+    });
+
+    // compteur
+    const visible = grid.children.length;
+    count.textContent = visible + " alerte" + (visible>1?"s":"");
+
+    // fit bounds si markers
+    if(bounds.length){
+      const b = L.latLngBounds(bounds);
+      map.fitBounds(b.pad(0.2));
+    }
+  }
+
+  // Actions cartes
+  window.markResolved = function(id){
+    DATA = DATA.map(it => it.id===id ? {...it, statut:'retrouve', resolved:true} : it);
+    saveData(DATA);
+    renderAll();
+  }
+  window.deleteAlert = function(id){
+    DATA = DATA.filter(it => it.id!==id);
+    saveData(DATA);
+    renderAll();
+  }
+
+  // Form -> ajout
+  document.getElementById('alert-form').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const obj = {
+      id: crypto.randomUUID(),
+      statut: (fd.get('statut')||'perdu').toLowerCase(),
+      espece: (fd.get('espece')||'autre').toLowerCase(),
+      canton: fd.get('canton')||'',
+      titre: fd.get('titre')||'',
+      lieu: fd.get('lieu')||'',
+      lat: parseFloat(fd.get('lat')||'') || null,
+      lng: parseFloat(fd.get('lng')||'') || null,
+      dateEvt: fd.get('dateEvt') || new Date().toISOString().slice(0,10),
+      createdAt: new Date().toISOString().slice(0,10),
+      infos: fd.get('infos')||'',
+      phone: fd.get('tel')||'',
+      email: fd.get('email')||'',
+      photo: fd.get('photo')||'',
+      resolved: false
+    };
+    DATA.unshift(obj);
+    saveData(DATA);
+    e.target.reset();
+    document.getElementById('box-publier').open = false;
+    renderAll();
+  });
+
+  // Click sur carte => remplit lat/lng du formulaire
+  map.on('click', (ev)=>{
+    const {lat,lng} = ev.latlng;
+    const f = document.getElementById('alert-form');
+    if(!f) return;
+    f.lat.value = lat.toFixed(6);
+    f.lng.value = lng.toFixed(6);
+    // petit marqueur temporaire
+    L.circleMarker([lat,lng],{radius:6, color:'#00000033', fillColor:'#111', fillOpacity:.2}).addTo(map);
+  });
+
+  // Deep-link hash (ex: #perdu, #VD)
+  (function initFromHash(){
+    const h = (location.hash||'').replace('#','').toUpperCase();
+    if(['PERDU','TROUVE','VU','DECEDE','RETROUVE','TOUS'].includes(h)){
+      document.querySelector(`.seg [data-statut="${h.toLowerCase()}"]`)?.click();
+    } else if (h.length===2){
+      document.getElementById('canton').value = h;
+    }
+  })();
+
+  // Première peinture
+  renderAll();
+  </script>
+
+  <style>
+    /* petite animation focus carte->carte */
+    .pulse{animation:pulse .6s}
+    @keyframes pulse{0%{outline:3px solid #93c5fd80}100%{outline:0}}
+  </style>
+</body>
+</html>

@@ -3,21 +3,97 @@
 <head>
   <meta charset="utf-8" />
   <title>Connexion — PetBook</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- SDK Auth0 SPA -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.2/auth0-spa-js.production.js"></script>
+  <style>
+    :root{--brand:#22c55e;--border:#e5e7eb}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:#fff;color:#111}
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .card{width:min(420px,92vw);border:1px solid var(--border);border-radius:14px;padding:22px 20px}
+    .title{margin:0 0 6px;font-size:24px}
+    .muted{margin:0 0 16px;color:#666}
+    .btn{display:block;width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff;margin-bottom:10px}
+    .status{margin-top:12px;font-size:14px;color:#444;min-height:1em}
+  </style>
 </head>
 <body>
+  <main class="wrap">
+    <section class="card">
+      <h1 class="title">Connexion</h1>
+      <p class="muted">Connecte-toi pour accéder à ton compte PetBook.</p>
+
+      <button id="btn-login" class="btn primary">Se connecter / S’inscrire</button>
+      <button id="btn-google" class="btn">Continuer avec Google</button>
+
+      <p id="status" class="status">Chargement…</p>
+    </section>
+  </main>
+
   <script>
-    if (window.netlifyIdentity) {
-      netlifyIdentity.on("init", user => {
-        if (user) { window.location.replace("/compte.html"); }
-        else { netlifyIdentity.open("login"); }
+    (async () => {
+      const BASE = location.origin; // gère petbook.ch et www.petbook.ch
+      const $status = document.getElementById("status");
+      const setStatus = (t) => ($status.textContent = t || "");
+
+      // Client Auth0
+      const auth0 = await createAuth0Client({
+        domain: "dev-y6a4ysjvjidhk636.us.auth0.com",
+        client_id: "ItQnwH65emGqhsKau7BxDNSt1GASe08D",
+        authorizationParams: {
+          redirect_uri: `${BASE}/compte.html`
+        },
+        cacheLocation: "localstorage",
+        useRefreshTokens: true
       });
-      netlifyIdentity.on("login", () => {
-        netlifyIdentity.close();
-        window.location.replace("/compte.html");
+
+      try {
+        // 1) Si on revient d’Auth0 par erreur sur /login (peu probable) -> finalise et va à /compte
+        if (location.search.includes("code=") && location.search.includes("state=")) {
+          setStatus("Finalisation de la connexion…");
+          await auth0.handleRedirectCallback();
+          history.replaceState({}, document.title, "/login.html");
+          location.replace(`${BASE}/compte.html`);
+          return;
+        }
+
+        // 2) Déjà authentifié ? file directement sur le compte
+        const isAuth = await auth0.isAuthenticated();
+        if (isAuth) {
+          location.replace(`${BASE}/compte.html`);
+          return;
+        }
+
+        setStatus("Prêt à se connecter.");
+      } catch (e) {
+        console.error(e);
+        setStatus("Erreur d’initialisation de la connexion.");
+      }
+
+      // Bouton "Se connecter / S’inscrire"
+      document.getElementById("btn-login").addEventListener("click", async () => {
+        try {
+          await auth0.loginWithRedirect(); // connexion standard (email/mot de passe, magic link, etc.)
+        } catch (e) {
+          console.error(e);
+          setStatus("Impossible d’ouvrir la fenêtre de connexion.");
+        }
       });
-      netlifyIdentity.init();
-    }
+
+      // Bouton "Google" (si activé côté Auth0 → Connections)
+      document.getElementById("btn-google").addEventListener("click", async () => {
+        try {
+          await auth0.loginWithRedirect({
+            authorizationParams: { connection: "google-oauth2" }
+          });
+        } catch (e) {
+          console.error(e);
+          setStatus("Connexion Google indisponible (vérifie la connexion Google dans Auth0).");
+        }
+      });
+    })();
   </script>
 </body>
 </html>

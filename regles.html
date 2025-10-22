@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Règles & Bonnes pratiques</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb}
+    *{box-sizing:border-box} body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;color:var(--ink);margin:0;background:#fff}
+    a{text-decoration:none;color:inherit} .container{max-width:960px;margin:0 auto;padding:0 18px}
+    header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px}.brand img{height:48px}
+    .page-head{padding:20px 0 10px;border-bottom:1px solid var(--border)} .title{font-weight:900;font-size:clamp(22px,3vw,30px)}
+    .subtitle{color:var(--muted);margin-top:4px}
+    .card{border:1px solid var(--border);border-radius:14px;padding:16px;margin:16px 0;background:#fff}
+    h2{font-size:20px;margin:0 0 8px} p{line-height:1.6;margin:8px 0} ul{margin:8px 0 8px 18px}
+    .note{background:#f8fafc;border:1px dashed var(--border);padding:12px;border-radius:12px;color:#334155}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff} .btn.ghost{background:#fff}
+    footer{border-top:1px solid var(--border);margin-top:22px}.copy{font-size:.9rem;color:var(--muted);padding:16px 0;text-align:center}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html"><img src="images/logo.png" alt="Logo PetBook" />PetBook</a>
+    <nav class="links" style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="animals.html">Vente</a><a href="services.html">Prestations</a><a href="pet-alert.html">Pet Alert</a>
+      <a href="accessoires.html">Accessoires</a><a href="publish.html" class="btn primary">Publier</a>
+    </nav>
+  </div>
+</header>
+
+<section class="container page-head">
+  <h1 class="title">Règles & Bonnes pratiques</h1>
+  <p class="subtitle">Pour protéger les animaux et la communauté — Suisse</p>
+</section>
+
+<main class="container">
+  <article class="card">
+    <h2>1) Bien-être animal (obligatoire)</h2>
+    <ul>
+      <li>Aucune maltraitance, trafic, dopage, mutilation ou dressage violent.</li>
+      <li>Respect des exigences suisses (hébergement, transport, cession, espèces protégées le cas échéant).</li>
+      <li>Pas de vente d’animaux sauvages protégés, ni d’animaux illégalement importés.</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>2) Annonces : transparence & exactitude</h2>
+    <ul>
+      <li>Indiquer espèce, âge approximatif, état de santé, documents (vaccins, pedigree) et conditions.</li>
+      <li>Prix clair (ou « gratuit » / « sur devis »). Pas de faux rabais, pas d’appâts.</li>
+      <li>Photos réelles et récentes (pas d’images volées ni retouches trompeuses).</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>3) Catégories autorisées</h2>
+    <ul>
+      <li><strong>Vente/Adoption</strong> : animaux de compagnie, animaux de ferme (agriculture).</li>
+      <li><strong>Accessoires</strong> : produits adaptés à l’espèce choisie.</li>
+      <li><strong>Services pros</strong> : toiletteur, vétérinaire, garde, éducation, reproduction, photo, etc.</li>
+    </ul>
+    <p class="note">Les alertes perdu/trouvé se font via <a href="pet-alert.html">Pet Alert</a>.</p>
+  </article>
+
+  <article class="card">
+    <h2>4) Interdits</h2>
+    <ul>
+      <li>Contenus illégaux, choquants, haineux, discriminatoires ou trompeurs.</li>
+      <li>Arnaques, demandes d’acomptes suspects, multi-comptes malveillants.</li>
+      <li>Scraping, flooding, spam, phishing, liens malveillants.</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>5) Sécurité des échanges</h2>
+    <ul>
+      <li>Vérifier l’identité et les documents. Rencontres dans des lieux sûrs.</li>
+      <li>Ne jamais partager de codes 2FA, ni documents sensibles au premier contact.</li>
+      <li>Utiliser des moyens de paiement traçables. Méfiance avec mandats/opérateurs anonymes.</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>6) Modération & signalements</h2>
+    <p>La modération peut masquer ou supprimer tout contenu contraire aux règles/loi. Signalez un abus via
+      <a href="pet-alert.html">Pet Alert</a> ou par e-mail : <a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a>.</p>
+  </article>
+
+  <article class="card">
+    <h2>7) Lien avec les CGU</h2>
+    <p>Ces règles complètent les <a href="cgu.html">Conditions Générales d’Utilisation</a>. En publiant, vous
+      confirmez respecter ces règles et la loi suisse.</p>
+  </article>
+
+  <div class="card" style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn ghost" href="publish.html">← Publier</a>
+    <a class="btn primary" href="index.html">Accueil</a>
+  </div>
+</main>
+
+<footer><div class="container copy">© PetBook — Tous droits réservés.</div></footer>
+</body>
+</html>

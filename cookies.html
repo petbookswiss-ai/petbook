@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Politique Cookies</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb}
+    *{box-sizing:border-box} body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;color:var(--ink);margin:0;background:#fff}
+    a{text-decoration:none;color:inherit} .container{max-width:960px;margin:0 auto;padding:0 18px}
+    header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px}.brand img{height:48px}
+    .page-head{padding:20px 0 10px;border-bottom:1px solid var(--border)}
+    .title{font-weight:900;font-size:clamp(22px,3vw,30px)} .subtitle{color:var(--muted);margin-top:4px}
+    .card{border:1px solid var(--border);border-radius:14px;padding:16px;margin:16px 0;background:#fff}
+    h2{font-size:20px;margin:0 0 8px} p{line-height:1.6;margin:8px 0} ul{margin:8px 0 8px 18px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff} .btn.ghost{background:#fff}
+    .muted{color:var(--muted)} footer{border-top:1px solid var(--border);margin-top:22px}
+    .copy{font-size:.9rem;color:var(--muted);padding:16px 0;text-align:center}
+    .banner{position:fixed;left:16px;right:16px;bottom:16px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.15);display:none;z-index:9999}
+    .banner .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html"><img src="images/logo.png" alt="Logo PetBook" />PetBook</a>
+    <nav class="links" style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="animals.html">Vente</a><a href="services.html">Prestations</a><a href="pet-alert.html">Pet Alert</a>
+      <a href="accessoires.html">Accessoires</a><a href="publish.html" class="btn primary">Publier</a>
+    </nav>
+  </div>
+</header>
+
+<section class="container page-head">
+  <h1 class="title">Politique relative aux cookies</h1>
+  <p class="subtitle">Gestion du consentement et informations sur les traceurs</p>
+</section>
+
+<main class="container">
+  <article class="card">
+    <h2>1. Qu’est-ce qu’un cookie ?</h2>
+    <p>Un cookie est un petit fichier stocké par votre navigateur. Il peut être nécessaire au fonctionnement du site
+      ou servir à la mesure d’audience et à l’amélioration de l’expérience.</p>
+  </article>
+
+  <article class="card">
+    <h2>2. Types de cookies utilisés</h2>
+    <ul>
+      <li><strong>Nécessaires</strong> (ex. sécurité, anti-spam, formulaire Netlify) — toujours actifs.</li>
+      <li><strong>Fonctionnels</strong> (ex. préférences, sauvegarde d’un état d’interface).</li>
+      <li><strong>Mesure d’audience</strong> (statistiques agrégées) — soumis à consentement si non essentiels.</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>3. Durées indicatives</h2>
+    <ul>
+      <li>Nécessaires : session à 12 mois selon le besoin.</li>
+      <li>Fonctionnels : jusqu’à 12 mois.</li>
+      <li>Mesure d’audience : 6 à 13 mois.</li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>4. Gérer votre consentement</h2>
+    <p>Vous pouvez modifier vos préférences à tout moment :</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="openConsent()">Ouvrir la bannière de consentement</button>
+      <button class="btn" onclick="acceptAll()">Tout accepter</button>
+      <button class="btn" onclick="rejectAll()">Tout refuser</button>
+    </div>
+    <p class="muted">Voir aussi : <a href="confidentialite.html">Politique de confidentialité</a>.</p>
+  </article>
+
+  <div class="card" style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn ghost" href="publish.html">← Publier</a>
+    <a class="btn primary" href="index.html">Accueil</a>
+  </div>
+</main>
+
+<!-- Bannière simple consentement -->
+<div id="cookie-banner" class="banner" role="dialog" aria-modal="true" aria-label="Consentement cookies">
+  <div><strong>Cookies</strong> — Nous utilisons des cookies nécessaires et, avec votre accord, des cookies de mesure.</div>
+  <div class="actions">
+    <button class="btn" onclick="setChoice('reject')">Tout refuser</button>
+    <button class="btn" onclick="setChoice('custom')">Personnaliser (activer mesure)</button>
+    <button class="btn primary" onclick="setChoice('accept')">Tout accepter</button>
+  </div>
+</div>
+
+<footer><div class="container copy">© PetBook — Tous droits réservés.</div></footer>
+
+<script>
+  const KEY='pb_cookie_choice'; // 'accept' | 'reject' | 'custom'
+  const banner=document.getElementById('cookie-banner');
+
+  function openConsent(){ banner.style.display='block'; }
+  function closeConsent(){ banner.style.display='none'; }
+
+  function setChoice(choice){
+    localStorage.setItem(KEY, choice);
+    // Ici, activer/désactiver vos scripts analytics selon 'choice'
+    closeConsent();
+  }
+  function acceptAll(){ setChoice('accept'); }
+  function rejectAll(){ setChoice('reject'); }
+
+  (function init(){
+    const c=localStorage.getItem(KEY);
+    if(!c){ openConsent(); }
+  })();
+</script>
+</body>
+</html>

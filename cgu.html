@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Conditions Générales d’Utilisation (CGU)</title>
+
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;color:var(--ink);margin:0;background:#fff}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:960px;margin:0 auto;padding:0 18px}
+
+    header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px}
+    .brand img{height:48px;width:auto}
+
+    .page-head{padding:20px 0 10px;border-bottom:1px solid var(--border)}
+    .title{font-weight:900;font-size:clamp(22px,3vw,30px)}
+    .subtitle{color:var(--muted);margin-top:4px}
+
+    .content{display:grid;grid-template-columns:280px 1fr;gap:26px;padding:20px 0}
+    @media (max-width: 920px){ .content{grid-template-columns:1fr} }
+
+    .toc{position:sticky;top:72px;align-self:start;border:1px solid var(--border);border-radius:14px;padding:14px}
+    .toc h3{margin:0 0 10px;font-size:14px;color:#334155}
+    .toc ul{list-style:none;padding-left:0;margin:0;display:grid;gap:8px}
+    .toc a{color:#0f172a}
+    .toc a:hover{color:var(--brand)}
+    .toc .muted{color:var(--muted);font-size:12px;margin-top:8px}
+
+    .card{border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;background:#fff}
+    h2{font-size:20px;margin:0 0 10px}
+    p{line-height:1.6;margin:8px 0}
+    ul{margin:8px 0 8px 18px}
+    .note{background:#f8fafc;border:1px dashed var(--border);padding:12px;border-radius:12px;color:#334155}
+    .muted{color:var(--muted)}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.ghost{background:#fff}
+    footer{border-top:1px solid var(--border);margin-top:22px}
+    .copy{font-size:.9rem;color:var(--muted);padding:16px 0;text-align:center}
+    .backtop{position:fixed;right:16px;bottom:16px;border:1px solid var(--border);background:#fff;border-radius:999px;padding:10px 14px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="images/logo.png" alt="Logo PetBook" />
+        PetBook
+      </a>
+      <nav class="links" style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="animals.html">Vente</a>
+        <a href="services.html">Prestations</a>
+        <a href="pet-alert.html">Pet Alert</a>
+        <a href="accessoires.html">Accessoires</a>
+        <a href="publish.html" class="btn primary">Publier</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ENTÊTE PAGE -->
+  <section class="container page-head">
+    <h1 class="title">Conditions Générales d’Utilisation (CGU)</h1>
+    <p class="subtitle">Règles d’utilisation de la plateforme PetBook (Suisse)</p>
+  </section>
+
+  <main class="container content">
+    <!-- SOMMAIRE -->
+    <aside class="toc" aria-label="Sommaire">
+      <h3>Sommaire</h3>
+      <ul>
+        <li><a href="#objet">1. Objet</a></li>
+        <li><a href="#definitions">2. Définitions</a></li>
+        <li><a href="#acces">3. Accès & compte</a></li>
+        <li><a href="#annonces">4. Annonces & contenu</a></li>
+        <li><a href="#regles">5. Règles d’usage</a></li>
+        <li><a href="#paiements">6. Prix & paiements</a></li>
+        <li><a href="#responsabilite">7. Responsabilité</a></li>
+        <li><a href="#propriete">8. Propriété intellectuelle</a></li>
+        <li><a href="#donnees">9. Données personnelles</a></li>
+        <li><a href="#mod">10. Modération & signalements</a></li>
+        <li><a href="#droit">11. Droit applicable & litiges</a></li>
+        <li><a href="#modif">12. Modifications des CGU</a></li>
+        <li><a href="#contact">13. Contact</a></li>
+      </ul>
+      <p class="muted">Dernière mise à jour : 20/10/2025</p>
+    </aside>
+
+    <!-- CONTENU -->
+    <section>
+
+      <article id="objet" class="card">
+        <h2>1. Objet</h2>
+        <p>Les présentes Conditions Générales d’Utilisation (CGU) régissent l’accès et l’utilisation du site et des services
+          proposés par <strong>PetBook</strong> (ci-après « la Plateforme »), permettant notamment la publication d’annonces
+          (vente/adoption, accessoires, services professionnels) et la consultation d’alertes (Pet Alert).</p>
+        <p>L’utilisation de la Plateforme implique l’acceptation pleine et entière des présentes CGU.</p>
+      </article>
+
+      <article id="definitions" class="card">
+        <h2>2. Définitions</h2>
+        <ul>
+          <li><strong>Utilisateur :</strong> toute personne qui accède au site (visiteur, annonceur, prestataire).</li>
+          <li><strong>Annonceur :</strong> Utilisateur qui publie une annonce sur la Plateforme.</li>
+          <li><strong>Annonce :</strong> contenu publié (texte, images, vidéos, prix) par un Annonceur.</li>
+          <li><strong>Services :</strong> fonctionnalités de la Plateforme (publication, recherche, mise en relation).</li>
+        </ul>
+      </article>
+
+      <article id="acces" class="card">
+        <h2>3. Accès & compte</h2>
+        <p>L’accès au site est gratuit. Certaines fonctions (publier, gérer ses annonces) peuvent nécessiter la création
+          d’un compte et une identification (par ex. Netlify Identity). L’Utilisateur s’assure de la confidentialité
+          de ses identifiants et de l’exactitude des informations transmises.</p>
+        <p>La Plateforme peut procéder à des vérifications anti-fraude/anti-arnaque (ex. confirmation d’identité)
+          afin de sécuriser les échanges et protéger les animaux et les personnes.</p>
+      </article>
+
+      <article id="annonces" class="card">
+        <h2>4. Annonces & contenu</h2>
+        <p>En publiant une Annonce, l’Annonceur garantit :</p>
+        <ul>
+          <li>la conformité légale en Suisse (bien-être animal, autorisations, traçabilité, mentions obligatoires) ;</li>
+          <li>la véracité et l’actualisation des informations (espèce, âge, état de santé, prix, conditions) ;</li>
+          <li>détenir les droits sur les textes, photos et vidéos publiés ;</li>
+          <li>respecter les catégories prévues (vente/adoption, accessoires, services pros).</li>
+        </ul>
+        <p>Les contenus interdits (illégaux, trompeurs, violents, discriminatoires, incitant à la maltraitance, etc.)
+          sont proscrits et peuvent être supprimés sans préavis. L’Annonceur reste seul responsable de son contenu.</p>
+      </article>
+
+      <article id="regles" class="card">
+        <h2>5. Règles d’usage</h2>
+        <ul>
+          <li>Respect du bien-être animal et des exigences légales suisses (transport, élevage, cession, identification).</li>
+          <li>Interdiction d’arnaques, de pratiques commerciales trompeuses ou de catalogues non disponibles.</li>
+          <li>Interdiction de scraper ou perturber le fonctionnement du site.</li>
+          <li>Signalement des abus via Pet Alert ou le contact (voir <a href="#contact">Contact</a>).</li>
+        </ul>
+        <p class="note">Certaines catégories (ex. Pet Alert) peuvent avoir des pages dédiées et règles spécifiques.</p>
+      </article>
+
+      <article id="paiements" class="card">
+        <h2>6. Prix & paiements</h2>
+        <p>La Plateforme peut présenter des prix indiqués par les Annonceurs (vente/adoption, accessoires) ou des services
+          « sur devis ». Sauf mention contraire, la Plateforme n’encaisse pas de fonds pour le compte des Annonceurs et
+          n’est pas partie aux transactions entre Utilisateurs.</p>
+        <p>Les frais éventuels liés à des options ou services proposés par la Plateforme seront clairement indiqués avant achat.</p>
+      </article>
+
+      <article id="responsabilite" class="card">
+        <h2>7. Responsabilité</h2>
+        <p>La Plateforme est un service d’hébergement et de mise en relation. Elle ne garantit pas la conclusion, la qualité
+          ni la conformité des ventes/prestations. Les Utilisateurs doivent réaliser leurs propres vérifications (identité,
+          documents, certificats, conditions de cession).</p>
+        <p>La Plateforme ne peut être tenue responsable des dommages indirects, pertes de profit ou atteintes résultant
+          d’un usage non conforme du site. Une interruption de service pour maintenance ou cas de force majeure peut survenir.</p>
+      </article>
+
+      <article id="propriete" class="card">
+        <h2>8. Propriété intellectuelle</h2>
+        <p>Les éléments de la Plateforme (marques, logos, interface, code, textes) sont protégés. Les contenus publiés par
+          les Utilisateurs restent leur propriété ; ils concèdent toutefois à la Plateforme une licence non exclusive,
+          mondiale et gratuite pour héberger, reproduire et afficher ces contenus dans le cadre du service.</p>
+      </article>
+
+      <article id="donnees" class="card">
+        <h2>9. Données personnelles</h2>
+        <p>La Plateforme traite des données conformément à sa Politique de confidentialité (distincte des présentes CGU).
+          Les Utilisateurs disposent des droits prévus par le droit suisse (et, le cas échéant, par le RGPD si applicable).
+          Pour toute demande relative aux données, contactez-nous (voir <a href="#contact">Contact</a>).</p>
+      </article>
+
+      <article id="mod" class="card">
+        <h2>10. Modération & signalements</h2>
+        <p>La Plateforme peut modérer, suspendre ou supprimer tout contenu ou compte en cas de non-respect des CGU ou de la loi,
+          notamment pour protéger les animaux et les Utilisateurs. Un mécanisme de signalement est disponible (Pet Alert / e-mail).</p>
+      </article>
+
+      <article id="droit" class="card">
+        <h2>11. Droit applicable & litiges</h2>
+        <p>Les présentes CGU sont soumises au <strong>droit suisse</strong>. En cas de litige et à défaut d’accord amiable,
+          les tribunaux compétents sont ceux du siège de l’éditeur de la Plateforme, sous réserve de dispositions impératives.</p>
+      </article>
+
+      <article id="modif" class="card">
+        <h2>12. Modifications des CGU</h2>
+        <p>La Plateforme peut modifier les CGU à tout moment. Les versions à jour sont publiées sur cette page avec la date
+          de mise à jour. En continuant d’utiliser le site après publication, l’Utilisateur accepte les nouvelles conditions.</p>
+      </article>
+
+      <article id="contact" class="card">
+        <h2>13. Contact</h2>
+        <p>Pour toute question ou signalement :</p>
+        <ul>
+          <li>E-mail : <a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a></li>
+          <li>Pet Alert : <a href="pet-alert.html">pet-alert.html</a></li>
+        </ul>
+        <div class="actions">
+          <a href="publish.html" class="btn ghost">← Retour à la publication</a>
+          <a href="index.html" class="btn primary">Accueil</a>
+        </div>
+        <p class="muted">Dernière mise à jour : 20/10/2025</p>
+      </article>
+
+    </section>
+  </main>
+
+  <a href="#" class="backtop" title="Haut de page">↑</a>
+
+  <footer>
+    <div class="container copy">© PetBook — Tous droits réservés.</div>
+  </footer>
+
+</body>
+</html>

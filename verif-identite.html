@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Vérification d’identité</title>
+
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+
+  <!-- Supabase JS v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;margin:0;color:var(--ink);background:#fff}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1100px;margin:0 auto;padding:0 18px}
+    header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px}
+    .brand img{height:48px;width:auto}
+
+    .section{padding:22px 0}
+    .card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:860px){.grid{grid-template-columns:1fr}}
+    label{display:block;font-size:14px;margin-bottom:6px;color:#334155}
+    input[type="text"],input[type="date"],input[type="file"]{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px}
+    .hint{font-size:12px;color:#64748b;margin-top:6px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.secondary{background:#fff}
+    .note{background:#f8fafc;border:1px dashed var(--border);padding:12px;border-radius:12px;color:#334155}
+    .status{margin-top:12px;font-size:.95rem}
+    .ok{color:#065f46}
+    .err{color:#b91c1c}
+    footer{border-top:1px solid var(--border);margin-top:22px}
+    .copy{font-size:.9rem;color:#64748b;padding:16px 0;text-align:center}
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="index.html"><img src="images/logo.png" alt="Logo PetBook" />PetBook</a>
+      <nav class="links" style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="annonces.html">Voir les annonces</a>
+        <a href="ajouter-annonce.html" class="btn primary">Publier</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <h1 style="font-weight:900;font-size:clamp(22px,3vw,28px);margin:0 0 10px;">Vérification d’identité</h1>
+    <p class="hint">Envoyez une photo/scan de votre carte d’identité. Le fichier est chiffré au repos dans Supabase et non public.</p>
+
+    <div class="card" style="margin-top:12px">
+      <form id="id-form">
+        <div class="grid">
+          <div>
+            <label for="nom">Nom</label>
+            <input id="nom" name="nom" type="text" placeholder="Nom légal" required>
+          </div>
+          <div>
+            <label for="prenom">Prénom</label>
+            <input id="prenom" name="prenom" type="text" placeholder="Prénom légal" required>
+          </div>
+          <div>
+            <label for="date_naissance">Date de naissance</label>
+            <input id="date_naissance" name="date_naissance" type="date" required>
+          </div>
+          <div>
+            <label for="numero_id">Numéro de carte</label>
+            <input id="numero_id" name="numero_id" type="text" placeholder="ex. XXX123456" required>
+          </div>
+          <div style="grid-column:1 / -1">
+            <label for="photo">Photo/scan (recto ou PDF)</label>
+            <input id="photo" name="photo" type="file" accept="image/*,application/pdf" required>
+            <div class="hint">Formats acceptés : JPG, PNG, HEIC, PDF. Taille conseillée ≤ 10 Mo.</div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top:12px">
+          En envoyant, vous autorisez PetBook à conserver ce document uniquement pour des raisons anti-fraude. 
+          Il n’est pas public. Vous pouvez demander sa suppression à tout moment.
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn primary" type="submit">Envoyer ma carte</button>
+          <a class="btn secondary" href="ajouter-annonce.html">← Retour à la publication</a>
+        </div>
+
+        <div id="status" class="status"></div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container copy">© PetBook — Tous droits réservés.</div>
+  </footer>
+
+  <script>
+    // Récupère les clés depuis Netlify (variables d'env injectées au build)
+    const SUPABASE_URL = window.SUPABASE_URL || "{{SUPABASE_URL}}";
+    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "{{SUPABASE_ANON_KEY}}";
+    const supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('id-form');
+    const status = document.getElementById('status');
+
+    function setStatus(msg, ok){
+      status.innerHTML = msg;
+      status.className = 'status ' + (ok ? 'ok' : 'err');
+    }
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      setStatus('Envoi en cours…', true);
+
+      const nom    = document.getElementById('nom').value.trim();
+      const prenom = document.getElementById('prenom').value.trim();
+      const dateNaiss = document.getElementById('date_naissance').value;
+      const numero = document.getElementById('numero_id').value.trim();
+      const file   = document.getElementById('photo').files[0];
+
+      if(!file){ setStatus('Sélectionne un fichier.', false); return; }
+
+      try{
+        // 1) Créer un nom de fichier unique
+        const ext = file.name.split('.').pop().toLowerCase();
+        const fname = `ids/${crypto.randomUUID()}.${ext}`;
+
+        // 2) Upload dans le bucket privé "ids"
+        const { data:up, error:upErr } = await supabase
+          .storage.from('ids')
+          .upload(fname, file, { upsert:false });
+
+        if(upErr) throw upErr;
+
+        // 3) Insérer la ligne dans identites
+        const payload = {
+          nom, prenom, date_naissance: dateNaiss, numero_id: numero,
+          photo_id: up.path, valide: false
+        };
+
+        const { data:row, error:dbErr } = await supabase
+          .from('identites')
+          .insert(payload)
+          .select('id')
+          .single();
+
+        if(dbErr) throw dbErr;
+
+        setStatus('✅ Document reçu. Nous allons vérifier votre identité rapidement. Référence : ' + row.id, true);
+        form.reset();
+
+      }catch(err){
+        console.error(err);
+        setStatus('❌ Erreur : ' + (err.message || err), false);
+      }
+    });
+  </script>
+</body>
+</html>

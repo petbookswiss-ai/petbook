@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Infos légales & Politiques</title>
+
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;margin:0;color:var(--ink);background:#fff}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1100px;margin:0 auto;padding:0 18px}
+
+    header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px}
+    .brand img{height:48px;width:auto}
+
+    .page-head{padding:22px 0 8px;border-bottom:1px solid var(--border)}
+    .title{font-weight:900;font-size:clamp(22px,3vw,30px)}
+    .subtitle{color:var(--muted);margin-top:4px}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:16px;margin:20px 0}
+    @media(min-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
+    .card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px}
+    .card h2{margin:0 0 8px;font-size:20px}
+    .card p{margin:8px 0;line-height:1.6;color:#1f2937}
+    .tag{display:inline-block;margin:0 8px 8px 0;padding:4px 10px;border-radius:999px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:12px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.ghost{background:#fff}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .note{background:#f8fafc;border:1px dashed var(--border);padding:12px;border-radius:12px;color:#334155}
+    footer{border-top:1px solid var(--border);margin-top:22px}
+    .copy{font-size:.9rem;color:var(--muted);padding:16px 0;text-align:center}
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="index.html"><img src="images/logo.png" alt="Logo PetBook" />PetBook</a>
+      <nav class="links" style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="animals.html">Vente</a>
+        <a href="services.html">Prestations</a>
+        <a href="pet-alert.html">Pet Alert</a>
+        <a href="accessoires.html">Accessoires</a>
+        <!-- ✅ vers la bonne page de publication -->
+        <a href="ajouter-annonce.html" class="btn primary">Publier</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TÊTE DE PAGE -->
+  <section class="container page-head">
+    <h1 class="title">Infos légales & Politiques</h1>
+    <p class="subtitle">Tout ce qui concerne l’utilisation de PetBook (Suisse)</p>
+  </section>
+
+  <main class="container">
+    <!-- Bandeau info -->
+    <div class="note" style="margin:18px 0">
+      📌 Vous cherchez un document précis ? Ouvrez-le directement ci-dessous.  
+      Pour publier, vous devez accepter nos <a href="regles.html">Règles</a> et nos <a href="cgu.html">CGU</a>.
+    </div>
+
+    <!-- Cartes -->
+    <section class="grid">
+      <article class="card">
+        <h2>Conditions Générales d’Utilisation (CGU)</h2>
+        <p>Règles qui encadrent l’accès et l’usage de la plateforme : publication d’annonces, responsabilités, modération, droit applicable.</p>
+        <div class="row">
+          <a class="btn primary" href="cgu.html">Lire les CGU</a>
+          <span class="tag">Obligatoire</span>
+          <span class="tag">Suisse</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Règles & Bonnes pratiques</h2>
+        <p>Ce qu’il faut faire (et ne pas faire) pour protéger les animaux et la communauté : transparence, sécurité, interdits.</p>
+        <div class="row">
+          <a class="btn primary" href="regles.html">Voir les Règles</a>
+          <span class="tag">Bien-être animal</span>
+          <span class="tag">Anti-arnaque</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Politique de confidentialité</h2>
+        <p>Quelles données nous collectons, pourquoi, pendant combien de temps, vos droits (LPD/RGPD) et comment les exercer.</p>
+        <div class="row">
+          <a class="btn primary" href="confidentialite.html">Lire la Politique</a>
+          <a class="btn ghost" href="mailto:petbookswiss@gmail.com">Exercer mes droits</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Politique Cookies</h2>
+        <p>Infos sur les cookies nécessaires et optionnels. Changez vos préférences quand vous voulez.</p>
+        <div class="row">
+          <a class="btn primary" href="cookies.html">Gérer mes cookies</a>
+          <button class="btn ghost" onclick="openConsent()">Réglages rapides</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Mentions légales</h2>
+        <p>Informations sur l’éditeur, l’hébergeur et la propriété intellectuelle.</p>
+        <div class="row">
+          <!-- ✅ lien corrigé -->
+          <a class="btn primary" href="mention-legales.html">Voir les mentions</a>
+          <a class="btn ghost" href="mailto:petbookswiss@gmail.com">Nous contacter</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Liens rapides</h2>
+        <p>Accès direct aux points clés liés à la publication et à la sécurité.</p>
+        <div class="row" style="gap:8px">
+          <!-- ✅ vers la bonne page de publication -->
+          <a class="btn ghost" href="ajouter-annonce.html">Publier une annonce</a>
+          <a class="btn ghost" href="pet-alert.html">Pet Alert</a>
+          <a class="btn ghost" href="index.html">Accueil</a>
+        </div>
+      </article>
+    </section>
+
+    <!-- Bas de page utilitaire -->
+    <div class="card" style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 26px">
+      <!-- ✅ vers la bonne page de publication -->
+      <a class="btn ghost" href="ajouter-annonce.html">← Retour à la publication</a>
+      <a class="btn primary" href="index.html">Accueil</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container copy">© PetBook — Tous droits réservés.</div>
+  </footer>
+
+  <script>
+    // Pont rapide vers la bannière cookies si vous utilisez le script de cookies.html
+    function openConsent(){
+      const banner = document.getElementById('cookie-banner');
+      if (banner) banner.style.display = 'block';
+      else window.location.href = 'cookies.html';
+    }
+  </script>
+</body>
+</html>

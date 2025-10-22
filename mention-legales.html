@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#22c55e" />
+  <title>PetBook — Mentions légales</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/logo-app.png" />
+  <style>
+    :root{--brand:#22c55e;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb}
+    *{box-sizing:border-box} body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu;color:var(--ink);margin:0;background:#fff}
+    a{text-decoration:none;color:inherit} .container{max-width:960px;margin:0 auto;padding:0 18px}
+    header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px}.brand img{height:48px}
+    .page-head{padding:20px 0 10px;border-bottom:1px solid var(--border)}
+    .title{font-weight:900;font-size:clamp(22px,3vw,30px)} .subtitle{color:var(--muted);margin-top:4px}
+    .card{border:1px solid var(--border);border-radius:14px;padding:16px;margin:16px 0;background:#fff}
+    h2{font-size:20px;margin:0 0 8px} p{line-height:1.6;margin:8px 0} ul{margin:8px 0 8px 18px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff} .btn.ghost{background:#fff}
+    footer{border-top:1px solid var(--border);margin-top:22px}.copy{font-size:.9rem;color:var(--muted);padding:16px 0;text-align:center}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html"><img src="images/logo.png" alt="Logo PetBook" />PetBook</a>
+    <nav class="links" style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="animals.html">Vente</a><a href="services.html">Prestations</a><a href="pet-alert.html">Pet Alert</a>
+      <a href="accessoires.html">Accessoires</a><a href="publish.html" class="btn primary">Publier</a>
+    </nav>
+  </div>
+</header>
+
+<section class="container page-head">
+  <h1 class="title">Mentions légales</h1>
+  <p class="subtitle">Informations sur l’éditeur et l’hébergeur</p>
+</section>
+
+<main class="container">
+  <article class="card">
+    <h2>Éditeur du site</h2>
+    <p><strong>PetBook</strong><br>
+       E-mail : <a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a><br>
+       (Ajoutez ici votre raison sociale, adresse postale, N° IDE/TVA si applicable)
+    </p>
+  </article>
+
+  <article class="card">
+    <h2>Hébergement</h2>
+    <p>Site hébergé via des services cloud (ex. Netlify). Les données de formulaire peuvent être traitées par ces
+       prestataires en tant que sous-traitants, conformément à la <a href="confidentialite.html">Politique de confidentialité</a>.</p>
+  </article>
+
+  <article class="card">
+    <h2>Propriété intellectuelle</h2>
+    <p>La marque, le logo, la charte graphique, le code et les contenus sont protégés. Voir aussi
+      les <a href="cgu.html">CGU</a>.</p>
+  </article>
+
+  <article class="card">
+    <h2>Contact</h2>
+    <p><a class="btn ghost" href="mailto:petbookswiss@gmail.com">Nous écrire</a></p>
+  </article>
+
+  <div class="card" style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn ghost" href="publish.html">← Publier</a>
+    <a class="btn primary" href="index.html">Accueil</a>
+  </div>
+</main>
+
+<footer><div class="container copy">© PetBook — Tous droits réservés.</div></footer>
+</body>
+</html>

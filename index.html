@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png" />
   <link rel="apple-touch-icon" href="images/logo-app.png" />
 
-  <!-- Netlify Identity (authentification) -->
+  <!-- Netlify Identity (auth) -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <style>
@@ -32,7 +32,7 @@
 
     .section{padding:24px 0}
 
-    /* ===== CARROUSEL (bulle allongée) ===== */
+    /* ===== CARROUSEL ===== */
     .bubble-wrap{display:flex;justify-content:center;margin-top:10px}
     .carousel{width:clamp(320px, 94vw, 1200px);aspect-ratio: 32/9;border-radius:30px; overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.12);position:relative; background:#000;}
     .carousel-track{display:flex;height:100%;transition:transform .6s ease}
@@ -46,9 +46,9 @@
     .dot{width:9px;height:9px;border-radius:999px;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.2);cursor:pointer}
     .dot.active{background:#fff}
 
-    /* ===== CATÉGORIES (PNG) ===== */
+    /* ===== TILES ===== */
     .tiles{display:grid;grid-template-columns:1fr;gap:24px;margin-top:22px}
-    @media(min-width:768px){.tiles{grid-template-columns:repeat(4,1fr)}}
+    @media(min-width:768px){.tiles{grid-template-columns:repeat(3,1fr)}}
     .logo-tile{display:block;text-align:center;transition:transform .2s}
     .logo-tile:hover{transform:translateY(-4px) scale(1.02)}
     .logo-img{width:100%;aspect-ratio:16/12;display:flex;align-items:center;justify-content:center}
@@ -62,20 +62,8 @@
     .footgrid{display:grid;grid-template-columns:1fr;gap:16px;padding:20px 0;text-align:center}
     @media(min-width:768px){.footgrid{grid-template-columns:repeat(2,1fr);text-align:left}}
     .copy{text-align:center;font-size:.85rem;color:#64748b;padding:10px 0}
-
-    /* ===== POPUP BIENVENUE ===== */
-    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
-    .modal{width:min(720px, 100%);background:#fff;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.25);overflow:hidden;animation:pop .18s ease-out;}
-    @keyframes pop{from{transform:scale(.98);opacity:.6}to{transform:scale(1);opacity:1}}
-    .modal header{border-bottom:1px solid var(--border);padding:16px 20px}
-    .modal header h3{margin:0;font-size:1.25rem}
-    .modal .content{padding:18px 20px;line-height:1.6}
-    .modal .content p{margin-bottom:12px}
-    .modal .actions{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding:12px 16px;background:#f8fafc;flex-wrap:wrap;}
-    .modal .left{display:flex;align-items:center;gap:10px}
-    .modal input[type="checkbox"]{width:18px;height:18px}
-    .modal .right{display:flex;gap:10px}
-    .btn.ghost{background:#fff;border-color:var(--border);color:var(--ink)}
+    .footer-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+    .footer-links a{color:var(--brand);text-decoration:underline;font-weight:700}
     .hidden{display:none !important}
   </style>
 </head>
@@ -89,11 +77,11 @@
         PetBook
       </a>
       <nav class="links">
-        <a href="animals.html">Vente</a>
-        <a href="services.html">Prestations</a>
+        <!-- 🔁 Vente -> Voir les annonces -->
+        <a href="annonces.html">Voir les annonces</a>
         <a href="pet-alert.html">Pet Alert</a>
-        <a href="accessoires.html">Accessoires</a>
-        <a href="publish.html" class="btn primary">Publier</a>
+        <a href="mailto:petbookswiss@gmail.com">Contact</a>
+        <a href="ajouter-annonce.html" class="btn primary">Publier</a>
 
         <!-- Auth UI -->
         <a id="link-account" href="compte.html" class="btn hidden">Mon compte</a>
@@ -103,7 +91,7 @@
     </div>
   </header>
 
-  <!-- CARROUSEL (6 SLIDES) -->
+  <!-- CARROUSEL -->
   <section class="section">
     <div class="bubble-wrap">
       <div class="carousel" aria-label="Bannières principales">
@@ -111,34 +99,34 @@
         <button class="carousel-btn next" aria-label="Image suivante">›</button>
         <div class="carousel-track" id="track">
 
-          <a class="slide" href="adoption-chiens.html">
+          <a class="slide" href="annonces.html#chiens">
             <img src="images/hero1.jpg" alt="Adoption chiens">
-            <div class="label">🐶 Adoption chiens</div>
+            <div class="label">🐶 Annonces chiens</div>
           </a>
 
-          <a class="slide" href="adoption-petits-animaux.html">
+          <a class="slide" href="annonces.html#petits-animaux">
             <img src="images/hero11.jpg" alt="Adoption petits animaux">
-            <div class="label">🐰 Adoption petits animaux</div>
+            <div class="label">🐰 Petits animaux</div>
           </a>
 
-          <a class="slide" href="adoption-reptiles-amphibiens.html">
-            <img src="images/hero111.jpg" alt="Adoption reptiles, amphibiens & insectes">
-            <div class="label">🦎 Adoption reptiles, amphibiens & insectes</div>
+          <a class="slide" href="annonces.html#reptiles">
+            <img src="images/hero111.jpg" alt="Reptiles, amphibiens & insectes">
+            <div class="label">🦎 Reptiles & Cie</div>
           </a>
 
-          <a class="slide" href="adoption-animaux-ferme.html">
-            <img src="images/hero1111.jpg" alt="Adoption animaux agricoles & de ferme">
-            <div class="label">🐐 Adoption animaux agricoles & de ferme</div>
+          <a class="slide" href="annonces.html#ferme">
+            <img src="images/hero1111.jpg" alt="Animaux agricoles & de ferme">
+            <div class="label">🐐 Animaux de ferme</div>
           </a>
 
-          <a class="slide" href="adoption-oiseaux.html">
-            <img src="images/hero11111.jpg" alt="Adoption oiseaux">
-            <div class="label">🐦 Adoption oiseaux</div>
+          <a class="slide" href="annonces.html#oiseaux">
+            <img src="images/hero11111.jpg" alt="Oiseaux">
+            <div class="label">🐦 Oiseaux</div>
           </a>
 
-          <a class="slide" href="adoption-poissons.html">
-            <img src="images/hero111111.jpg" alt="Adoption poissons">
-            <div class="label">🐠 Adoption poissons</div>
+          <a class="slide" href="annonces.html#poissons">
+            <img src="images/hero111111.jpg" alt="Poissons">
+            <div class="label">🐠 Poissons</div>
           </a>
 
         </div>
@@ -147,55 +135,25 @@
     </div>
   </section>
 
-  <!-- CATÉGORIES -->
+  <!-- TILES PRINCIPALES -->
   <main class="section">
     <div class="container">
       <div class="tiles">
-        <a class="logo-tile" href="animals.html">
-          <div class="logo-img"><img src="images/vente.png" alt="Vente d’animaux" /></div>
-          <div class="caption"><h2>Vente d’animaux</h2><p>Parcourir les animaux disponibles</p></div>
-        </a>
-        <a class="logo-tile" href="services.html">
-          <div class="logo-img"><img src="images/prestations.png" alt="Prestations pour animaux" /></div>
-          <div class="caption"><h2>Prestations</h2><p>Garde, promenade, toilettage…</p></div>
+        <a class="logo-tile" href="annonces.html">
+          <div class="logo-img"><img src="images/vente.png" alt="Voir les annonces" /></div>
+          <div class="caption"><h2>Voir les annonces</h2><p>Parcourir tous les animaux</p></div>
         </a>
         <a class="logo-tile" href="pet-alert.html">
           <div class="logo-img"><img src="images/pet-alert.png" alt="PET ALERT" /></div>
-          <div class="caption"><h2>PET ALERT</h2><p>Signalez un animal perdu ou retrouvé</p></div>
+          <div class="caption"><h2>Pet Alert</h2><p>Signalez un animal perdu/trouvé</p></div>
         </a>
-        <a class="logo-tile" href="accessoires.html">
-          <div class="logo-img"><img src="images/Accesoir.png" alt="Accessoires & matériel" /></div>
-          <div class="caption"><h2>Accessoires</h2><p>Cages, litières, paniers, laisses…</p></div>
+        <a class="logo-tile" href="ajouter-annonce.html">
+          <div class="logo-img"><img src="images/Accesoir.png" alt="Publier une annonce" /></div>
+          <div class="caption"><h2>Publier</h2><p>Ajoutez votre annonce maintenant</p></div>
         </a>
       </div>
     </div>
   </main>
-
-  <!-- POPUP BIENVENUE -->
-  <div class="modal-backdrop" id="pb-welcome">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pb-title">
-      <header><h3 id="pb-title">Bienvenue sur PetBook 🐾</h3></header>
-      <div class="content">
-        <p><strong>Un site de passionnés pour les passionnés.</strong></p>
-        <p>Notre mission&nbsp;: offrir un espace <strong>sûr, responsable et bienveillant</strong> pour adopter, vendre et s’entraider autour des animaux.</p>
-        <p>💚 Nous sommes <strong>contre la maltraitance</strong> et les <strong>pratiques malhonnêtes</strong>. Pour protéger tout le monde, <strong>les vendeurs doivent s’identifier</strong> (anti-arnaque), afin que la vente et l’adoption se déroulent dans la confiance, en protégeant au mieux <strong>les animaux</strong> et <strong>les humains</strong>.</p>
-        <p>Sur PetBook, retrouvez&nbsp;:</p>
-        <ul style="margin-left:18px;margin-top:8px">
-          <li>🐕 des <strong>animaux</strong> à adopter / vendre</li>
-          <li>🛒 des <strong>accessoires</strong> et équipements</li>
-          <li>🚨 des <strong>alertes</strong> pour animaux perdus / retrouvés</li>
-        </ul>
-        <p>Bienvenue dans la communauté PetBook — créé <em>par des passionnés, pour des passionnés</em> 🐶🐱</p>
-      </div>
-      <div class="actions">
-        <label class="left"><input type="checkbox" id="pb-never" /><span>✅ Lue, ne plus afficher</span></label>
-        <div class="right">
-          <button class="btn ghost" id="pb-close">Fermer</button>
-          <button class="btn primary" id="pb-accept">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- FOOTER -->
   <footer>
@@ -207,102 +165,75 @@
       <div>
         <div class="title" style="font-weight:800">Contact</div>
         <p class="muted"><a href="mailto:petbookswiss@gmail.com">petbookswiss@gmail.com</a></p>
+        <div class="footer-links">
+          <!-- ✅ Lien infos légales en bas de page -->
+          <a href="infos-legales.html">Infos légales</a>
+        </div>
       </div>
     </div>
     <div class="container copy">© PetBook — Tous droits réservés.</div>
+  </footer>
 
-    <!-- Chat Milo -->
-    <script src="assets/chat-milo.js"></script>
+  <!-- JS carrousel + auth -->
+  <script>
+    // ===== CARROUSEL =====
+    (function(){
+      const track = document.getElementById('track');
+      const slides = [...track.children];
+      const prev   = document.querySelector('.prev');
+      const next   = document.querySelector('.next');
+      const dotsWrap = document.getElementById('dots');
+      let idx = 0, timer = null, lock = false;
 
-    <!-- JS carrousel + popup + auth -->
-    <script>
-      // ===== CARROUSEL =====
-      (function(){
-        const track = document.getElementById('track');
-        const slides = [...track.children];
-        const prev   = document.querySelector('.prev');
-        const next   = document.querySelector('.next');
-        const dotsWrap = document.getElementById('dots');
-        let idx = 0, timer = null, lock = false;
+      slides.forEach((_,i)=>{
+        const b=document.createElement('button');
+        b.className='dot'+(i===0?' active':'');
+        b.addEventListener('click',()=>go(i,true));
+        dotsWrap.appendChild(b);
+      });
+      const dots=[...dotsWrap.children];
 
-        slides.forEach((_,i)=>{
-          const b=document.createElement('button');
-          b.className='dot'+(i===0?' active':'');
-          b.addEventListener('click',()=>go(i,true));
-          dotsWrap.appendChild(b);
-        });
-        const dots=[...dotsWrap.children];
+      function go(n,user){
+        if(lock) return; lock=true;
+        idx=(n+slides.length)%slides.length;
+        track.style.transform='translateX(' + (-idx*100) + '%)';
+        dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+        setTimeout(()=>lock=false,620);
+        if(user){ restart(); }
+      }
+      function nextSlide(){ go(idx+1); }
+      function prevSlide(){ go(idx-1); }
+      function start(){ timer=setInterval(nextSlide, 4500); }
+      function stop(){ clearInterval(timer); timer=null; }
+      function restart(){ stop(); start(); }
 
-        function go(n,user){
-          if(lock) return; lock=true;
-          idx=(n+slides.length)%slides.length;
-          track.style.transform='translateX(' + (-idx*100) + '%)';
-          dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
-          setTimeout(()=>lock=false,620);
-          if(user){ restart(); }
-        }
-        function nextSlide(){ go(idx+1); }
-        function prevSlide(){ go(idx-1); }
-        function start(){ timer=setInterval(nextSlide, 4500); }
-        function stop(){ clearInterval(timer); timer=null; }
-        function restart(){ stop(); start(); }
+      next.addEventListener('click', nextSlide);
+      prev.addEventListener('click', prevSlide);
+      const carousel = document.querySelector('.carousel');
+      carousel.addEventListener('mouseenter', stop);
+      carousel.addEventListener('mouseleave', start);
 
-        next.addEventListener('click', nextSlide);
-        prev.addEventListener('click', prevSlide);
-        const carousel = document.querySelector('.carousel');
-        carousel.addEventListener('mouseenter', stop);
-        carousel.addEventListener('mouseleave', start);
-
-        // Swipe mobile
-        let sx=0; track.addEventListener('touchstart',e=>{sx=e.touches[0].clientX; stop();},{passive:true});
-        track.addEventListener('touchend',e=>{
-          const dx=e.changedTouches[0].clientX - sx;
-          if(Math.abs(dx)>40){ dx<0 ? nextSlide() : prevSlide(); }
-          start();
-        });
-
+      // Swipe mobile
+      let sx=0; track.addEventListener('touchstart',e=>{sx=e.touches[0].clientX; stop();},{passive:true});
+      track.addEventListener('touchend',e=>{
+        const dx=e.changedTouches[0].clientX - sx;
+        if(Math.abs(dx)>40){ dx<0 ? nextSlide() : prevSlide(); }
         start();
-      })();
+      });
 
-      // ===== POPUP BIENVENUE =====
-      (function(){
-        const MODAL_KEY = 'pb_welcome_dismissed';
-        const backdrop = document.getElementById('pb-welcome');
-        const chk = document.getElementById('pb-never');
-        const closeBtn = document.getElementById('pb-close');
-        const okBtn = document.getElementById('pb-accept');
+      start();
+    })();
 
-        function openModal(){ backdrop.style.display='flex'; document.body.style.overflow='hidden'; }
-        function hideModal(){ backdrop.style.display='none'; document.body.style.overflow=''; }
+    // ===== AUTH NETLIFY IDENTITY =====
+    (function(){
+      const loginBtn   = document.getElementById('btn-login');
+      const logoutBtn  = document.getElementById('btn-logout');
+      const accountLnk = document.getElementById('link-account');
 
-        if(localStorage.getItem(MODAL_KEY) !== '1'){
-          window.setTimeout(openModal, 250);
-        }
+      function show(el){ el.classList.remove('hidden'); }
+      function hide(el){ el.classList.add('hidden'); }
 
-        closeBtn.addEventListener('click', hideModal);
-        okBtn.addEventListener('click', ()=>{
-          if(chk.checked){ localStorage.setItem(MODAL_KEY, '1'); }
-          hideModal();
-        });
-
-        window.addEventListener('keydown', (e)=>{
-          if(backdrop.style.display==='flex' && e.key==='Escape'){ hideModal(); }
-        });
-        backdrop.addEventListener('click', (e)=>{
-          if(e.target === backdrop){ hideModal(); }
-        });
-      })();
-
-      // ===== AUTH NETLIFY IDENTITY =====
-      (function(){
-        const loginBtn   = document.getElementById('btn-login');
-        const logoutBtn  = document.getElementById('btn-logout');
-        const accountLnk = document.getElementById('link-account');
-
-        function show(el){ el.classList.remove('hidden'); }
-        function hide(el){ el.classList.add('hidden'); }
-
-        // Ouvre la modale d'auth
+      if(window.netlifyIdentity){
         loginBtn.addEventListener('click', () => netlifyIdentity.open('login'));
         logoutBtn.addEventListener('click', () => netlifyIdentity.logout());
 
@@ -314,22 +245,20 @@
           }
         }
 
-        if(window.netlifyIdentity){
-          netlifyIdentity.on('init', refreshUI);
-          netlifyIdentity.on('login', (user)=>{
-            refreshUI(user);
-            netlifyIdentity.close();
-            // Redirection optionnelle vers l'espace membre
-            window.location.href = '/compte.html';
-          });
-          netlifyIdentity.on('logout', ()=>{
-            refreshUI(null);
-            window.location.href = '/';
-          });
-          netlifyIdentity.init();
-        }
-      })();
-    </script>
-  </footer>
+        netlifyIdentity.on('init', refreshUI);
+        netlifyIdentity.on('login', (user)=>{
+          refreshUI(user);
+          netlifyIdentity.close();
+          // Redirige vers l’espace membre
+          window.location.href = 'compte.html';
+        });
+        netlifyIdentity.on('logout', ()=>{
+          refreshUI(null);
+          window.location.href = 'index.html';
+        });
+        netlifyIdentity.init();
+      }
+    })();
+  </script>
 </body>
 </html>

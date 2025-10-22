@@ -3,26 +3,98 @@
 <head>
   <meta charset="utf-8" />
   <title>Mon compte — PetBook</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- SDK Auth0 SPA -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.2/auth0-spa-js.production.js"></script>
+  <style>
+    :root{--brand:#22c55e;--border:#e5e7eb}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:#fff;color:#111}
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .card{width:min(560px,92vw);border:1px solid var(--border);border-radius:14px;padding:22px 20px}
+    .title{margin:0 0 6px;font-size:24px}
+    .muted{margin:0 0 16px;color:#666}
+    .btn{display:inline-flex;gap:8px;align-items:center;padding:10px 14px;border-radius:10px;border:1px solid var(--border);cursor:pointer}
+    .btn.danger{border-color:#ef4444;color:#ef4444}
+    .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .box{background:#fafafa;border:1px solid var(--border);border-radius:12px;padding:12px}
+    .label{font-size:12px;color:#666;margin:0 0 6px}
+    .val{margin:0}
+    .status{margin-top:12px;font-size:14px;color:#444}
+  </style>
 </head>
 <body>
-  <h1>Mon compte</h1>
-  <p id="hello"></p>
-  <button onclick="netlifyIdentity.logout()">Se déconnecter</button>
+  <main class="wrap">
+    <section class="card">
+      <h1 class="title">Mon compte</h1>
+      <p class="muted" id="hello">Chargement…</p>
+
+      <div class="box">
+        <p class="label">E-mail</p>
+        <p id="email" class="val">—</p>
+      </div>
+
+      <div class="row" style="margin-top:16px">
+        <button id="logout" class="btn danger">Se déconnecter</button>
+        <a class="btn" href="/">Retour à l’accueil</a>
+      </div>
+
+      <p id="status" class="status"></p>
+    </section>
+  </main>
 
   <script>
-    function guard() {
-      const user = netlifyIdentity.currentUser();
-      if (!user) {
-        window.location.replace("/login.html");
-        return;
+    document.addEventListener("DOMContentLoaded", async () => {
+      const BASE = location.origin;
+      const $status = document.getElementById("status");
+      const setStatus = (t) => ($status.textContent = t || "");
+
+      // Initialisation du client Auth0
+      const auth0 = await createAuth0Client({
+        domain: "dev-y6a4ysjvjidhk636.us.auth0.com",
+        client_id: "ItQnwH65emGqhsKau7BxDNSt1GASe08D",
+        authorizationParams: {
+          // IMPORTANT : le callback revient bien ici
+          redirect_uri: `${BASE}/compte.html`
+        },
+        cacheLocation: "localstorage",
+        useRefreshTokens: true
+      });
+
+      try {
+        // 1) Si on revient d'Auth0 (présence des paramètres code/state), on termine le login
+        if (location.search.includes("code=") && location.search.includes("state=")) {
+          setStatus("Finalisation de la connexion…");
+          await auth0.handleRedirectCallback();
+          // Nettoie l'URL (enlève ?code=...&state=...)
+          history.replaceState({}, document.title, "/compte.html");
+        }
+
+        // 2) Si NON authentifié, renvoie vers la page de login
+        const isAuth = await auth0.isAuthenticated();
+        if (!isAuth) {
+          // tu peux aussi faire un login direct :
+          // await auth0.loginWithRedirect();
+          location.replace(`${BASE}/login.html`);
+          return;
+        }
+
+        // 3) Utilisateur authentifié : afficher son profil
+        const user = await auth0.getUser();
+        document.getElementById("hello").textContent =
+          `Bonjour ${user.name || user.email} 👋`;
+        document.getElementById("email").textContent = user.email || "—";
+        setStatus("");
+      } catch (e) {
+        console.error("Erreur Auth0 :", e);
+        setStatus("Une erreur est survenue pendant l’authentification.");
       }
-      document.getElementById("hello").textContent =
-        `Bonjour ${user.user_metadata?.full_name || user.email} 👋`;
-    }
-    netlifyIdentity.on("init", guard);
-    netlifyIdentity.on("login", guard);
-    netlifyIdentity.init();
+
+      // Déconnexion propre → retour vers la page de login
+      document.getElementById("logout").addEventListener("click", () => {
+        auth0.logout({ logoutParams: { returnTo: `${BASE}/login.html` } });
+      });
+    });
   </script>
 </body>
 </html>
