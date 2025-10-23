@@ -1,4 +1,25 @@
 # Netlify configuration for PetBook
-# Protects the member area with Netlify Identity roles
+# Stable SPA-style routing: always fall back to index.html for unknown routes.
+# Do NOT redirect all routes to /compte.html (this caused the "always on account page" bug).
 
-# If the user has the default 'user' role (i.e., is logged in), serve the page
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/mon-compte"
+  to   = "/compte.html"
+  status = 200
+
+# SPA fallback — very important to keep the site reachable at / (home) and all public pages
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
+
+# Security headers (optional but nice)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
